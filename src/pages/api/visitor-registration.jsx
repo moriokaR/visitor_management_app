@@ -1,57 +1,65 @@
-// 来客者入力情報登録　dataは配列ではない
 // pages/api/visitor-registration.jsx
 import { openDatabase } from "../../util/db";
 
 export default async function handler(req, res) {
+  console.log("受け取りました");
+
   if (req.method === "POST") {
     try {
       // POSTリクエストからデータを取得
       const { data } = req.body;
 
       // 取得したデータが存在するかチェック
-      if (!data || !Array.isArray(data)) {
-        return res.status(400).json({ message: "Bad Request" });
+      if (data.visitorName !== "テスト一号君") {
+        console.log(data.visitorName);
+        return res.status(400).json({ message: `${data.visitorName} さんの登録に失敗しました` });
       }
 
       // データベースに接続
-      const db = await openDatabase();
-
-      // トランザクション開始
-      await db.run("BEGIN TRANSACTION");
+      console.log("DBをオープンしました");
+      const db = openDatabase();
+      console.log(db);
+      console.log("DBをオープンできました");
 
       try {
+        console.log("トライに入りました");
+
+        // トランザクション開始
+        db.exec("BEGIN");
+        console.log("ここまで到達できました１");
+
         // 来客者情報テーブルへのデータ挿入
-        await db.run(
-          "INSERT INTO Visitors (VisitorName, Company) VALUES (?, ?)",
-          [data.visitorName, data.company]
-        );
+        db.prepare("INSERT INTO Visitors (VisitorName, Company) VALUES (?, ?)")
+          .run(data.visitorName, data.company);
 
         // 入退館管理情報テーブルへのデータ挿入
-        await db.run(
-          "INSERT INTO table2 (VisitorStatus, EntryDateTime, Attender) VALUES (?, ?, ?)",
-          ["入館手続き前", data.entryDateTime, data.Attender]
-        );
+        db.prepare(
+          "INSERT INTO entryexitManagements (VisitorStatus, EntryDateTime, Attender) VALUES (?, ?, ?)"
+        ).run("入館手続き前", data.entryDateTime, data.attender);
 
         // トランザクションコミット
-        await db.run("COMMIT");
+        db.exec("COMMIT");
 
-        // データベース接続を閉じる
-        await db.close();
+        console.log("ここまで到達できました２");
 
         // 成功時にステータスコード201とメッセージを返す
-        res
-          .status(201)
-          .json({ message: data.visitorName + "さんの登録が完了しました！" });
+        res.status(201).json({ message: `${data.visitorName} さんの登録が完了しました！` });
       } catch (error) {
-        // トランザクションロールバック
-        await db.run("ROLLBACK");
+        // エラーが発生した場合、エラーメッセージをコンソールに表示
 
-        // エラーを再スロー
-        throw error;
+        // トランザクションロールバック
+        db.exec("ROLLBACK");
+
+        // データベース接続を閉じる
+        db.close();
+
+        // エラー時にステータスコード500とメッセージを返す
+        res.status(500).json({ message: `Internal Server Error` });
       }
     } catch (error) {
-      console.error("Error inserting data:", error);
-      res.status(500).json({ message: "Internal Server Error" });
+      // POSTリクエストからデータを取得できなかった場合のエラー処理
+      console.error("データ取得エラー:", error);
+      res.status(400).json({ message: "Bad Request" });
     }
   } else {
     // サポートしていないメソッドへの対応

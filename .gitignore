@@ -1,5 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# データベースディレクトリを無視
+/VisitorManagements
+
 # dependencies
 /node_modules
 /.pnp
@@ -34,3 +37,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+"C:\Users\r23600343\Desktop\visitor_management_app\VisitorManagements"
