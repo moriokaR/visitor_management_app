@@ -2,31 +2,17 @@
 import { openDatabase } from "../../util/db";
 
 export default async function handler(req, res) {
-  console.log("受け取りました");
-
   if (req.method === "POST") {
     try {
       // POSTリクエストからデータを取得
       const { data } = req.body;
 
-      // 取得したデータが存在するかチェック
-      if (data.visitorName !== "テスト一号君") {
-        console.log(data.visitorName);
-        return res.status(400).json({ message: `${data.visitorName} さんの登録に失敗しました` });
-      }
-
       // データベースに接続
-      console.log("DBをオープンしました");
       const db = openDatabase();
-      console.log(db);
-      console.log("DBをオープンできました");
 
       try {
-        console.log("トライに入りました");
-
         // トランザクション開始
         db.exec("BEGIN");
-        console.log("ここまで到達できました１");
 
         // 来客者情報テーブルへのデータ挿入
         db.prepare("INSERT INTO Visitors (VisitorName, Company) VALUES (?, ?)")
@@ -39,8 +25,6 @@ export default async function handler(req, res) {
 
         // トランザクションコミット
         db.exec("COMMIT");
-
-        console.log("ここまで到達できました２");
 
         // 成功時にステータスコード201とメッセージを返す
         res.status(201).json({ message: `${data.visitorName} さんの登録が完了しました！` });
