@@ -3,21 +3,22 @@ import React, { useState, useEffect } from "react";
 import { visitorRegistration } from "../../util/information-processing";
 import Head from "next/head";
 import Link from "next/link";
+import InputDateTime from "../../components/InputDateTime"; // InputDateTimeコンポーネントをインポート
 
-export default function FirstPost() {
+export default function VisitorRegistration() {
   const [testData, setTestData] = useState({
     visitorName: "",
     company: "",
-    entryDateTime: "2000-01-01 00:00:00",
+    entryDateTime: new Date(), // 現在の日付と時刻で初期化
     attender: "",
   });
 
   const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {
-    // フォームが有効かどうかを確認
+    // フォームのバリデーション
     const isValid = Object.values(testData).every(
-      (value) => value.trim() !== ""
+      (value) => (typeof value !== 'string' && typeof value !== 'undefined') || (typeof value === 'string' && value.trim() !== "")
     );
     setIsFormValid(isValid);
   }, [testData]);
@@ -25,13 +26,20 @@ export default function FirstPost() {
   const handleInsertData = async () => {
     await visitorRegistration(testData);
 
-    // データ登録後、フォームをクリア
+    // 登録後、フォームをクリア
     setTestData({
       visitorName: "",
       company: "",
-      entryDateTime: "2000-01-01 00:00:00",
+      entryDateTime: new Date(),
       attender: "",
     });
+  };
+
+  const handleDateTimeChange = (date) => {
+    setTestData((prevData) => ({
+      ...prevData,
+      entryDateTime: date,
+    }));
   };
 
   const handleInputChange = (fieldName, value) => {
@@ -44,13 +52,13 @@ export default function FirstPost() {
   return (
     <div>
       <Head>
-        <title>来客者登録画面</title>
+        <title>来客者登録</title>
       </Head>
-      <h1>来客者登録画面！</h1>
-      <Link href="/">ホームへ戻る</Link>
+      <h1>来客者登録</h1>
+      <Link href="/">ホームに戻る</Link>
       <div>
         <label>
-          Visitor Name:
+          来客者名：
           <input
             type="text"
             value={testData.visitorName}
@@ -59,7 +67,7 @@ export default function FirstPost() {
         </label>
         <br />
         <label>
-          Company:
+          会社：
           <input
             type="text"
             value={testData.company}
@@ -68,7 +76,15 @@ export default function FirstPost() {
         </label>
         <br />
         <label>
-          Attender:
+          来訪日時：
+          <InputDateTime
+            selectedDate={testData.entryDateTime}
+            onChange={handleDateTimeChange}
+          />
+        </label>
+        <br />
+        <label>
+          担当者：
           <input
             type="text"
             value={testData.attender}

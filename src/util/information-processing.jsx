@@ -4,6 +4,9 @@
 // 来客者情報登録
 export const visitorRegistration = async (formData) => {
   try {
+        // attenderの日付をフォーマットする
+        const formattedEntryDateTime = formatDateTime(formData.entryDateTime);
+
     const response = await fetch("/api/visitor-registration", {
       method: "POST",
       headers: {
@@ -13,7 +16,7 @@ export const visitorRegistration = async (formData) => {
         data: {
           visitorName: formData.visitorName,
           company: formData.company,
-          entryDateTime: formData.entryDateTime,
+          entryDateTime: formattedEntryDateTime,
           attender: formData.attender,
         },
       }),
@@ -27,4 +30,25 @@ export const visitorRegistration = async (formData) => {
   } catch (error) {
     console.error("Error inserting data:", error);
   }
+};
+
+// 日付をフォーマットする関数
+const formatDateTime = (dateTimeString) => {
+  const options = {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true, // AM/PM形式
+  };
+
+  // タイムゾーンを日本時間に設定
+  const japanTimeZone = "Asia/Tokyo";
+  const formattedJapanDateTime = new Intl.DateTimeFormat("ja-JP", {
+    ...options,
+    timeZone: japanTimeZone,
+  }).format(new Date(dateTimeString));
+
+  return formattedJapanDateTime;
 };
