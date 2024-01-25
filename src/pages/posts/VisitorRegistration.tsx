@@ -5,6 +5,7 @@ import Head from "next/head";
 import Link from "next/link";
 import InputDateTime from "../../components/InputDateTime";
 
+// フォームデータの型
 interface TestData {
   visitorName: string;
   company: string;
@@ -13,6 +14,7 @@ interface TestData {
 }
 
 export default function VisitorRegistration() {
+  // フォームデータの状態
   const [testData, setTestData] = useState<TestData>({
     visitorName: "",
     company: "",
@@ -20,11 +22,15 @@ export default function VisitorRegistration() {
     attender: "",
   });
 
+  // フォームのバリデーションステート
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
+
+  // 会社情報関連のステート
   const [companyType, setCompanyType] = useState<string>("会社名");
   const [companyText, setCompanyText] = useState<string>("");
   const [companyOffice, setCompanyOffice] = useState<string>("RITS他事業所");
 
+  // フォームのバリデーションエフェクト
   useEffect(() => {
     const isValid = Object.values(testData).every(
       (value) =>
@@ -34,9 +40,11 @@ export default function VisitorRegistration() {
     setIsFormValid(isValid);
   }, [testData, companyType]);
 
+  // データ登録ハンドラ
   const handleInsertData = async () => {
     await visitorRegistration(testData);
 
+    // フォームをクリア
     setTestData({
       visitorName: "",
       company: "",
@@ -48,6 +56,7 @@ export default function VisitorRegistration() {
     setCompanyOffice("RITS他事業所");
   };
 
+  // 日時変更ハンドラ
   const handleDateTimeChange = (date: Date) => {
     setTestData((prevData) => ({
       ...prevData,
@@ -55,6 +64,7 @@ export default function VisitorRegistration() {
     }));
   };
 
+  // テキスト入力ハンドラ
   const handleInputChange = (fieldName: string, value: string) => {
     setTestData((prevData) => ({
       ...prevData,
@@ -62,14 +72,17 @@ export default function VisitorRegistration() {
     }));
   };
 
+  // 会社名テキスト入力ハンドラ
   const handleInputChangeCompanyText = (value: string) => {
     setCompanyText(value);
   };
 
+  // 事業所選択ハンドラ
   const handleInputChangeCompanyOffice = (value: string) => {
     setCompanyOffice(value);
   };
 
+  // 会社種別変更ハンドラ
   const handleCompanyTypeChange = (type: string) => {
     setCompanyType(type);
   };
@@ -82,6 +95,7 @@ export default function VisitorRegistration() {
       <h1>来客者登録</h1>
       <Link href="/">ホームに戻る</Link>
       <div>
+        {/* 来客者名の入力 */}
         <label>
           来客者名：
           <input
@@ -93,6 +107,7 @@ export default function VisitorRegistration() {
           />
         </label>
         <br />
+        {/* 会社名ラジオボタン */}
         <label>
           <input
             type="radio"
@@ -103,6 +118,7 @@ export default function VisitorRegistration() {
             }}
           />
           会社名：
+          {/* 会社名テキストボックス */}
           <input
             type="text"
             value={companyText}
@@ -114,6 +130,7 @@ export default function VisitorRegistration() {
           />
         </label>
         <br />
+        {/* 当社ラジオボタン */}
         <label>
           <input
             type="radio"
@@ -125,6 +142,7 @@ export default function VisitorRegistration() {
           />
           当社：
           <div>
+            {/* 他事業所ラジオボタン */}
             <input
               type="radio"
               value={companyOffice}
@@ -137,6 +155,7 @@ export default function VisitorRegistration() {
             />
             他事業所
             <br />
+            {/* 鳥取事業所ラジオボタン */}
             <input
               type="radio"
               value={companyOffice}
@@ -151,6 +170,7 @@ export default function VisitorRegistration() {
           </div>
         </label>
         <br />
+        {/* 来訪日時入力 */}
         <label>
           来訪日時：
           <InputDateTime
@@ -159,6 +179,7 @@ export default function VisitorRegistration() {
           />
         </label>
         <br />
+        {/* 担当者入力 */}
         <label>
           担当者：
           <input
@@ -170,6 +191,7 @@ export default function VisitorRegistration() {
           />
         </label>
         <br />
+        {/* 登録ボタン */}
         <button onClick={handleInsertData} disabled={!isFormValid}>
           登録
         </button>
