@@ -4,8 +4,8 @@
 // 来客者情報登録
 export const visitorRegistration = async (formData) => {
   try {
-        // attenderの日付をフォーマットする
-        const formattedEntryDateTime = formatDateTime(formData.entryDateTime);
+    // attenderの日付をフォーマットする
+    const formattedEntryDateTime = formatDateTime(formData.entryDateTime);
 
     const response = await fetch("/api/visitor-registration", {
       method: "POST",
