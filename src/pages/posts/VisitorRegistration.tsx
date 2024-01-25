@@ -1,5 +1,5 @@
 // src\pages\posts\VisitorRegistration.tsx
-import React, { useState, useEffect, ChangeEvent } from "react";
+import React, { useState, useEffect } from "react";
 import { visitorRegistration } from "../../util/information-processing";
 import Head from "next/head";
 import Link from "next/link";
@@ -18,7 +18,7 @@ export default function VisitorRegistration() {
   const [testData, setTestData] = useState<TestData>({
     visitorName: "",
     company: "",
-    entryDateTime: new Date(),
+    entryDateTime: new Date(), // 現在の日付と時刻で初期化
     attender: "",
   });
 
@@ -32,13 +32,12 @@ export default function VisitorRegistration() {
 
   // フォームのバリデーションエフェクト
   useEffect(() => {
+    // フォームのバリデーション
     const isValid = Object.values(testData).every(
-      (value) =>
-        (typeof value !== "string" && typeof value !== "undefined") ||
-        (typeof value === "string" && value.trim() !== "")
+      (value) => (typeof value !== 'string' && typeof value !== 'undefined') || (typeof value === 'string' && value.trim() !== "")
     );
     setIsFormValid(isValid);
-  }, [testData, companyType]);
+  }, [testData]);
 
   // データ登録ハンドラ
   const handleInsertData = async () => {
@@ -51,9 +50,6 @@ export default function VisitorRegistration() {
       entryDateTime: new Date(),
       attender: "",
     });
-    handleCompanyTypeChange("会社名");
-    setCompanyText("");
-    setCompanyOffice("RITS他事業所");
   };
 
   // 日時変更ハンドラ
@@ -86,7 +82,7 @@ export default function VisitorRegistration() {
   const handleCompanyTypeChange = (type: string) => {
     setCompanyType(type);
   };
-
+      
   return (
     <div>
       <Head>
@@ -101,9 +97,7 @@ export default function VisitorRegistration() {
           <input
             type="text"
             value={testData.visitorName}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              handleInputChange("visitorName", e.target.value)
-            }
+            onChange={(e) => handleInputChange("visitorName", e.target.value)}
           />
         </label>
         <br />
@@ -185,9 +179,7 @@ export default function VisitorRegistration() {
           <input
             type="text"
             value={testData.attender}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              handleInputChange("attender", e.target.value)
-            }
+            onChange={(e) => handleInputChange("attender", e.target.value)}
           />
         </label>
         <br />
@@ -199,4 +191,3 @@ export default function VisitorRegistration() {
     </div>
   );
 }
-
