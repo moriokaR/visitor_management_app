@@ -5,6 +5,10 @@ import Head from "next/head";
 import Link from "next/link";
 import InputDateTime from "../../components/InputDateTime"; // InputDateTimeコンポーネントをインポート
 
+// 会社ラジオボタン定数
+const COMPANY_TYPE_COMPANY = "会社名";
+const COMPANY_TYPE_OUR_COMPANY = "当社";
+
 // フォームのデータ型を定義
 interface TestData {
   visitorName: string;
@@ -25,7 +29,7 @@ export default function VisitorRegistration() {
 
   // フォームのバリデーション状態
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
-  const [companyType, setCompanyType] = useState<string>("会社名");
+  const [companyType, setCompanyType] = useState<string>(COMPANY_TYPE_COMPANY);
   const [companyText, setCompanyText] = useState<string>("");
   const [companyOffice, setCompanyOffice] = useState<string>("RITS他事業所");
 
@@ -50,7 +54,7 @@ export default function VisitorRegistration() {
       entryDateTime: new Date(),
       attender: "",
     });
-    handleCompanyTypeChange("会社名");
+    handleCompanyTypeChange(COMPANY_TYPE_COMPANY);
     setCompanyText("");
     setCompanyOffice("RITS他事業所");
   };
@@ -111,9 +115,9 @@ export default function VisitorRegistration() {
         <label>
           <input
             type="radio"
-            checked={companyType === "会社名"}
+            checked={companyType === COMPANY_TYPE_COMPANY}
             onChange={() => {
-              handleCompanyTypeChange("会社名");
+              handleCompanyTypeChange(COMPANY_TYPE_COMPANY);
               handleInputChange("company", companyText);
             }}
           />
@@ -125,16 +129,16 @@ export default function VisitorRegistration() {
               handleInputChangeCompanyText(e.target.value);
               handleInputChange("company", e.target.value);
             }}
-            disabled={companyType !== "会社名"}
+            disabled={companyType !== COMPANY_TYPE_COMPANY}
           />
         </label>
         <br />
         <label>
           <input
             type="radio"
-            checked={companyType === "当社"}
+            checked={companyType === COMPANY_TYPE_OUR_COMPANY}
             onChange={() => {
-              handleCompanyTypeChange("当社");
+              handleCompanyTypeChange(COMPANY_TYPE_OUR_COMPANY);
               handleInputChange("company", companyOffice);
             }}
           />
@@ -149,7 +153,7 @@ export default function VisitorRegistration() {
                 handleInputChangeCompanyOffice("RITS他事業所");
                 handleInputChange("company", e.target.value);
               }}
-              disabled={companyType !== "当社"}
+              disabled={companyType !== COMPANY_TYPE_OUR_COMPANY}
             />
             他事業所
             <br />
@@ -161,7 +165,7 @@ export default function VisitorRegistration() {
                 handleInputChangeCompanyOffice("RITS鳥取事業所");
                 handleInputChange("company", e.target.value);
               }}
-              disabled={companyType !== "当社"}
+              disabled={companyType !== COMPANY_TYPE_OUR_COMPANY}
             />
             鳥取事業所
           </div>
