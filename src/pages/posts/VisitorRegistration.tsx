@@ -1,11 +1,11 @@
 // src\pages\posts\VisitorRegistration.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import { visitorRegistration } from "../../util/information-processing";
 import Head from "next/head";
 import Link from "next/link";
-import InputDateTime from "../../components/InputDateTime";
+import InputDateTime from "../../components/InputDateTime"; // InputDateTimeコンポーネントをインポート
 
-// フォームデータの型
+// フォームのデータ型を定義
 interface TestData {
   visitorName: string;
   company: string;
@@ -13,46 +13,49 @@ interface TestData {
   attender: string;
 }
 
+// メインのコンポーネント
 export default function VisitorRegistration() {
-  // フォームデータの状態
+  // フォームの状態を管理するためのstate
   const [testData, setTestData] = useState<TestData>({
     visitorName: "",
     company: "",
-    entryDateTime: new Date(), // 現在の日付と時刻で初期化
+    entryDateTime: new Date(),
     attender: "",
   });
 
-  // フォームのバリデーションステート
+  // フォームのバリデーション状態
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
-
-  // 会社情報関連のステート
   const [companyType, setCompanyType] = useState<string>("会社名");
   const [companyText, setCompanyText] = useState<string>("");
   const [companyOffice, setCompanyOffice] = useState<string>("RITS他事業所");
 
-  // フォームのバリデーションエフェクト
+  // フォームのバリデーションを更新
   useEffect(() => {
-    // フォームのバリデーション
     const isValid = Object.values(testData).every(
-      (value) => (typeof value !== 'string' && typeof value !== 'undefined') || (typeof value === 'string' && value.trim() !== "")
+      (value) =>
+        (typeof value !== "string" && typeof value !== "undefined") ||
+        (typeof value === "string" && value.trim() !== "")
     );
     setIsFormValid(isValid);
-  }, [testData]);
+  }, [testData, companyType]);
 
-  // データ登録ハンドラ
+  // データを登録するハンドラ
   const handleInsertData = async () => {
     await visitorRegistration(testData);
 
-    // フォームをクリア
+    // 登録後、フォームをクリア
     setTestData({
       visitorName: "",
       company: "",
       entryDateTime: new Date(),
       attender: "",
     });
+    handleCompanyTypeChange("会社名");
+    setCompanyText("");
+    setCompanyOffice("RITS他事業所");
   };
 
-  // 日時変更ハンドラ
+  // 日時の変更ハンドラ
   const handleDateTimeChange = (date: Date) => {
     setTestData((prevData) => ({
       ...prevData,
@@ -60,7 +63,7 @@ export default function VisitorRegistration() {
     }));
   };
 
-  // テキスト入力ハンドラ
+  // テキスト入力の変更ハンドラ
   const handleInputChange = (fieldName: string, value: string) => {
     setTestData((prevData) => ({
       ...prevData,
@@ -68,40 +71,43 @@ export default function VisitorRegistration() {
     }));
   };
 
-  // 会社名テキスト入力ハンドラ
+  // 会社名テキストボックスの変更ハンドラ
   const handleInputChangeCompanyText = (value: string) => {
     setCompanyText(value);
   };
 
-  // 事業所選択ハンドラ
+  // 事業所の変更ハンドラ
   const handleInputChangeCompanyOffice = (value: string) => {
     setCompanyOffice(value);
   };
 
-  // 会社種別変更ハンドラ
+  // 会社タイプの変更ハンドラ
   const handleCompanyTypeChange = (type: string) => {
     setCompanyType(type);
   };
-      
+
   return (
     <div>
+      {/* ヘッド要素 */}
       <Head>
         <title>来客者登録</title>
       </Head>
+      {/* タイトル */}
       <h1>来客者登録</h1>
+      {/* ホームに戻るリンク */}
       <Link href="/">ホームに戻る</Link>
       <div>
-        {/* 来客者名の入力 */}
+        {/* 来客者名の入力フォーム */}
         <label>
           来客者名：
           <input
             type="text"
             value={testData.visitorName}
-            onChange={(e) => handleInputChange("visitorName", e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange("visitorName", e.target.value)}
           />
         </label>
         <br />
-        {/* 会社名ラジオボタン */}
+        {/* 会社名または当社のラジオボタン */}
         <label>
           <input
             type="radio"
@@ -112,19 +118,17 @@ export default function VisitorRegistration() {
             }}
           />
           会社名：
-          {/* 会社名テキストボックス */}
           <input
             type="text"
             value={companyText}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               handleInputChangeCompanyText(e.target.value);
-              handleInputChange("company", companyText);
+              handleInputChange("company", e.target.value);
             }}
             disabled={companyType !== "会社名"}
           />
         </label>
         <br />
-        {/* 当社ラジオボタン */}
         <label>
           <input
             type="radio"
@@ -136,27 +140,26 @@ export default function VisitorRegistration() {
           />
           当社：
           <div>
-            {/* 他事業所ラジオボタン */}
+            {/* 事業所の選択ラジオボタン */}
             <input
               type="radio"
-              value={companyOffice}
+              value="RITS他事業所"
               checked={companyOffice === "RITS他事業所"}
-              onChange={() => {
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 handleInputChangeCompanyOffice("RITS他事業所");
-                handleInputChange("company", companyOffice);
+                handleInputChange("company", e.target.value);
               }}
               disabled={companyType !== "当社"}
             />
             他事業所
             <br />
-            {/* 鳥取事業所ラジオボタン */}
             <input
               type="radio"
-              value={companyOffice}
+              value="RITS鳥取事業所"
               checked={companyOffice === "RITS鳥取事業所"}
-              onChange={() => {
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 handleInputChangeCompanyOffice("RITS鳥取事業所");
-                handleInputChange("company", companyOffice);
+                handleInputChange("company", e.target.value);
               }}
               disabled={companyType !== "当社"}
             />
@@ -164,7 +167,7 @@ export default function VisitorRegistration() {
           </div>
         </label>
         <br />
-        {/* 来訪日時入力 */}
+        {/* 来訪日時の入力フォーム */}
         <label>
           来訪日時：
           <InputDateTime
@@ -173,13 +176,13 @@ export default function VisitorRegistration() {
           />
         </label>
         <br />
-        {/* 担当者入力 */}
+        {/* 担当者の入力フォーム */}
         <label>
           担当者：
           <input
             type="text"
             value={testData.attender}
-            onChange={(e) => handleInputChange("attender", e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange("attender", e.target.value)}
           />
         </label>
         <br />
