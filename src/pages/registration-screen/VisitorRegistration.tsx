@@ -1,6 +1,6 @@
 // src\pages\posts\VisitorRegistration.tsx
 import React, { useState, useEffect, ChangeEvent } from "react";
-import { visitorRegistration } from "../../util/information-processing";
+import { visitorRegistration } from "../../information-processing/visitorRegistration";
 import Head from "next/head";
 import Link from "next/link";
 import InputDateTime from "../../components/InputDateTime"; // InputDateTimeコンポーネントをインポート
