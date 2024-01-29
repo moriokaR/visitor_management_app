@@ -5,13 +5,13 @@ import Head from "next/head";
 const HomePage = () => {
   const router = useRouter();
   const handlePageClick = () => {
-    router.push("/posts/VisitorRegistration");
+    router.push("/registration-screen/VisitorRegistration");
   };
   const buttonClickEn = () => {
-    router.push("/posts/EntryRegistration");
+    router.push("/registration-screen/EntryRegistration");
   };
   const buttonClickEx = () => {
-    router.push("/posts/ExitRegistration");
+    router.push("/registration-screen/ExitRegistration");
   };
 
   const containerStyles = {
