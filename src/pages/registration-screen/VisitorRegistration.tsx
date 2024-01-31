@@ -5,7 +5,9 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import InputDateTime from "../../components/InputDateTime"; // InputDateTimeコンポーネントをインポート
 import styles from "../../styles/VisitorRegistration.module.css";
-import ConfirmationDialog from "../confirmation-dialog/registration.jsx";
+import RegistrationDialog from "../confirmation-dialog/registrationDialog";
+import SuccessfulRegistrationDialog from "../confirmation-dialog/successfulRegistrationDialog";
+import HomeDialog from "../confirmation-dialog/homeDialog";
 
 // 会社ラジオボタン定数
 const COMPANY_TYPE_COMPANY = "会社名";
@@ -22,8 +24,10 @@ interface TestData {
 // メインのコンポーネント
 export default function VisitorRegistration() {
   // 確認ダイアログ
-  const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(true);
-  // const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
+  const [registrationOpen, setRegistrationOpen] = useState(false);
+  const [successRegistrationOpen, setSuccessRegistrationOpen] = useState(false);
+  const [homeOpen, setHomeOpen] = useState(false);
+
   // フォームの状態を管理するためのstate
   const [testData, setTestData] = useState<TestData>({
     visitorName: "",
@@ -46,10 +50,7 @@ export default function VisitorRegistration() {
     const isFormChanged =
       JSON.stringify(initialFormData) !== JSON.stringify(testData);
     if (isFormChanged) {
-      const result = window.confirm("入力途中ですが、本当に戻りますか？");
-      if (result) {
-        router.push("/");
-      }
+      setHomeOpen(true);
     } else {
       router.push("/");
     }
@@ -73,39 +74,36 @@ export default function VisitorRegistration() {
 
   // データを登録するハンドラ
   const handleInsertData = async () => {
-    const result = window.confirm("以下の内容で来客登録をしますか？");
-    if (result) {
-      const Registration_result = await visitorRegistration(testData);
-
-      if (Registration_result == "登録成功") {
-        const result = window.confirm(
-          testData.visitorName +
-            "さんの登録が完了しました。\n登録を続けますか？"
-        );
-        if (result) {
-          // 登録後、フォームをクリア
-          setTestData({
-            visitorName: "",
-            company: "",
-            entryDateTime: new Date(),
-            attender: "",
-          });
-          setInitialFormData({
-            visitorName: "",
-            company: "",
-            entryDateTime: new Date(),
-            attender: "",
-          });
-          handleCompanyTypeChange(COMPANY_TYPE_COMPANY);
-          setCompanyText("");
-          setCompanyOffice("RITS他事業所");
-        } else {
-          router.push("/");
-        }
-      } else if (Registration_result == "登録失敗") {
-        alert("登録に失敗しました");
-      }
+    setRegistrationOpen(true);
+  };
+  // 登録しますか？　ok処理
+  const okRegistration = async () => {
+    const Registration_result = await visitorRegistration(testData);
+    if (Registration_result == "登録成功") {
+      setSuccessRegistrationOpen(true);
+    } else if (Registration_result == "登録失敗") {
+      alert("登録に失敗しました");
     }
+  };
+
+  // 登録　続ける
+  const continueRegistration = async () => {
+    // 登録後、フォームをクリア
+    setTestData({
+      visitorName: "",
+      company: "",
+      entryDateTime: new Date(),
+      attender: "",
+    });
+    setInitialFormData({
+      visitorName: "",
+      company: "",
+      entryDateTime: new Date(),
+      attender: "",
+    });
+    handleCompanyTypeChange(COMPANY_TYPE_COMPANY);
+    setCompanyText("");
+    setCompanyOffice("RITS他事業所");
   };
 
   // 日時の変更ハンドラ
@@ -142,13 +140,36 @@ export default function VisitorRegistration() {
   return (
     <div>
       {/* 確認ダイアログ */}
-      <ConfirmationDialog
-        isOpen={confirmationDialogOpen}
+      <RegistrationDialog
+        isOpen={registrationOpen}
         onConfirm={() => {
+          setRegistrationOpen(false);
+          okRegistration();
+        }}
+        onCancel={() => {
+          setRegistrationOpen(false);
+        }}
+      />
+      <SuccessfulRegistrationDialog
+        name={testData.visitorName}
+        isOpen={successRegistrationOpen}
+        onConfirm={() => {
+          setSuccessRegistrationOpen(false);
+          continueRegistration();
+        }}
+        onCancel={() => {
+          setSuccessRegistrationOpen(false);
+          router.push("/");
+        }}
+      />
+      <HomeDialog
+        isOpen={homeOpen}
+        onConfirm={() => {
+          setHomeOpen(false);
           router.push("/");
         }}
         onCancel={() => {
-          setConfirmationDialogOpen(false);
+          setHomeOpen(false);
         }}
       />
       {/* ヘッド要素 */}

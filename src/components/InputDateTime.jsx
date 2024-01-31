@@ -1,8 +1,8 @@
 // components/InputDateTime.js
 
-import React from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import React from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 /**
  * @param selectedDate - 選択された日付と時刻
@@ -34,6 +34,6 @@ const CustomInput = React.forwardRef(({ value, onClick, readOnly }, ref) => (
 ));
 
 // displayNameを追加
-CustomInput.displayName = 'CustomInput';
+CustomInput.displayName = "CustomInput";
 
 export default InputDateTime;
