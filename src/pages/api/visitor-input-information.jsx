@@ -45,7 +45,7 @@ export default async function handler(req, res) {
         // トランザクションコミット
         db.exec("COMMIT");
 
-        // 成功時にステータスコード201とメッセージを返す
+        // 成功時にステータスコード200とメッセージを返す
         res.status(200).json({ data: combinedData });
       } catch (error) {
         // エラーが発生した場合、エラーメッセージをコンソールに表示

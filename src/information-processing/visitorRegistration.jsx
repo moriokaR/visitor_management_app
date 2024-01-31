@@ -1,5 +1,9 @@
 // 情報処理
-// util/infomation-processing.jsx
+// src\information-processing\visitorRegistration.jsx
+
+// returnする関数
+const SUCCESSFUL_REGISTRATION = "登録成功";
+const FAILURE_REGISTRATION = "登録失敗";
 
 // 来客者情報登録
 export const visitorRegistration = async (formData) => {
@@ -22,13 +26,18 @@ export const visitorRegistration = async (formData) => {
       }),
     });
 
+    // 登録成功
     if (response.status === 201) {
       console.log("Data inserted successfully");
+
+      return SUCCESSFUL_REGISTRATION;
     } else {
       console.error("Failed to insert data:", await response.json());
     }
   } catch (error) {
     console.error("Error inserting data:", error);
+
+    return FAILURE_REGISTRATION;
   }
 };
 
