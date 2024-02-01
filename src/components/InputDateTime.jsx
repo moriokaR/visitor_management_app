@@ -26,7 +26,7 @@ const InputDateTime = ({ selectedDate, onChange }) => {
 // カスタム入力フィールドのコンポーネント
 const CustomInput = React.forwardRef(({ value, onClick, readOnly }, ref) => (
   <input
-    value={value}
+    defaultValue={value}
     onClick={onClick}
     readOnly={readOnly} // readOnlyを設定
     ref={ref}

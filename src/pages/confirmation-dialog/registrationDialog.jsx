@@ -12,6 +12,10 @@ export default function RegistrationDialog({ isOpen, onConfirm, onCancel }) {
         open={isOpen}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        sx={{
+          top: '-85%',
+          left: '0%',
+        }}
       >
         <DialogContent>
           <DialogContentText id="alert-dialog-description">

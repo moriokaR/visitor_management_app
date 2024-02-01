@@ -172,6 +172,7 @@ export default function VisitorRegistration() {
           setHomeOpen(false);
         }}
       />
+
       {/* ヘッド要素 */}
       <Head>
         <title>来客者登録</title>
@@ -239,7 +240,7 @@ export default function VisitorRegistration() {
             {/* 事業所の選択ラジオボタン */}
             <input
               type="radio"
-              value="RITS他事業所"
+              defaultValue="RITS他事業所"
               checked={companyOffice === "RITS他事業所"}
               onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 handleInputChangeCompanyOffice("RITS他事業所");
@@ -251,7 +252,7 @@ export default function VisitorRegistration() {
             <br />
             <input
               type="radio"
-              value="RITS鳥取事業所"
+              defaultValue="RITS鳥取事業所"
               checked={companyOffice === "RITS鳥取事業所"}
               onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 handleInputChangeCompanyOffice("RITS鳥取事業所");
