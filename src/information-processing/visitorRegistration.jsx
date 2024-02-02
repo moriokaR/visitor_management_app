@@ -1,11 +1,11 @@
 // 情報処理
-// src\information-processing\visitorRegistration.jsx
+// src/information-processing/visitorRegistration.jsx
 
 // returnする関数
 const SUCCESSFUL_REGISTRATION = "登録成功";
 const FAILURE_REGISTRATION = "登録失敗";
 
-// 来客者情報登録
+// 来客者入力情報登録
 export const visitorRegistration = async (formData) => {
   try {
     // attenderの日付をフォーマットする

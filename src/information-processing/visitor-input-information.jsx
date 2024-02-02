@@ -1,3 +1,5 @@
+const FAILURE_GET_INFORMSTION = "情報取得失敗";
+
 // 来客者情報取得
 export const getVisitorInputInformation = async () => {
     try {
@@ -15,10 +17,12 @@ export const getVisitorInputInformation = async () => {
         return data;
       } else {
         console.error("Failed to fetch data:", await response.json());
-        return { error: { message: "Failed to fetch data" } };
+
+        // エラーを返す。
+        return FAILURE_GET_INFORMSTION;
       }
     } catch (error) {
       console.error("Error fetching data:", error);
-      return { error: { message: "Error fetching data" } };
+      return FAILURE_GET_INFORMSTION;
     }
   };

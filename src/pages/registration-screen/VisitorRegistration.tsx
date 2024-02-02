@@ -114,7 +114,7 @@ export default function VisitorRegistration() {
     }));
   };
 
-  // テキスト入力の変更ハンドラ
+  // 入力の変更ハンドラ
   const handleInputChange = (fieldName: string, value: string) => {
     setTestData((prevData) => ({
       ...prevData,

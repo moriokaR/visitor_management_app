@@ -1,5 +1,5 @@
 // pages/api/entry-registration.jsx
-import { openDatabase } from "../util/db";
+import { openDatabase } from "../../util/db";
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
@@ -20,9 +20,11 @@ export default async function handler(req, res) {
         ).run("入館中", data.entryCardID, data.visitorID);
 
         // 入館証テーブルへのデータ挿入
+        // IDが99の時、RentStatusは"未貸出"で登録される。
+        // 基本は"貸出中"
         db.prepare(
           "UPDATE entryCards SET RentStatus = ? WHERE EntryCardID = ?"
-        ).run("貸出中", data.entryCardID);
+        ).run(data.rentStatus, data.entryCardID);
 
         // トランザクションコミット
         db.exec("COMMIT");

@@ -1,0 +1,9 @@
+.h2 {
+    margin: 0; /* 上下の余白をゼロに設定 */
+    text-align: center;
+  }
+
+  .radioButton{
+    display: flex;
+    justify-content: center; /* 水平方向の中央寄せ */
+  }

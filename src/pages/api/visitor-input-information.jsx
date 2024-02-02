@@ -1,5 +1,4 @@
 // pages/api/visitor-input-information.jsx
-
 import { openDatabase } from "../../util/db";
 
 export default async function handler(req, res) {
