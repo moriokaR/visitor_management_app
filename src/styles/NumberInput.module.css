@@ -41,4 +41,12 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   /* オーバーレイよりも前面に */
   z-index: 1500;
+  text-align: center; /* 水平方向に真ん中にするための追加 */
+}
+
+.inputFieldPoP {
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 15px;
+  margin: 5 auto;
 }

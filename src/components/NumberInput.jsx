@@ -17,6 +17,7 @@ const NumberInput = ({
   const [alreadyRentOpen, setAlreadyRentOpen] = useState(false);
   const [inNumber, setInNumber] = useState("");
 
+  // キーボード用
   const [number, setNumber] = useState("");
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   // 現在のタイプの貸出中の番号の配列
@@ -56,14 +57,7 @@ const NumberInput = ({
     if (number.length === 2 && isKeyboardVisible) {
       const isAlreadyRented = rentCardNumber.includes(inNumber);
       if (isAlreadyRented) {
-        // alert(
-        //   "この名札番号は貸出中です\n入力値:" +
-        //     number +
-        //     "\n貸出中 " +
-        //     testDataType +
-        //     ": " +
-        //     rentCardNumber
-        // );
+        // アラート表示
         setInNumber(number);
         setAlreadyRentOpen(true);
         setNumber("");
@@ -146,7 +140,7 @@ const NumberInput = ({
               value={number}
               placeholder="# 01~20"
               readOnly
-              className={styles.inputField}
+              className={styles.inputFieldPoP}
             />
             <div className={styles.keyboard}>
               {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
