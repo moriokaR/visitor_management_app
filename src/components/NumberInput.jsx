@@ -132,10 +132,12 @@ const NumberInput = ({
           <div className={styles.PopUp}>
             <div>
               貸出中&nbsp;
-              {testDataType}:{" "}
+              {testDataType}:
               {rentCardNumber.map((cardNumber, index) => (
                 <span key={index} className={styles.rentCardNumber}>
-                  {cardNumber},
+                  {index === rentCardNumber.length - 1
+                    ? cardNumber
+                    : `${cardNumber},`}
                 </span>
               ))}
             </div>
