@@ -1,6 +1,7 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
 import { GetServerSideProps } from "next";
 import { getVisitorInputInformation } from "../../information-processing/visitor-input-information";
+import { getRentCardInformation } from "../../information-processing/rent-card-information";
 import { entryRegistration } from "../../information-processing/entryRegistration";
 import { DataGrid } from "@mui/x-data-grid";
 import { useRouter } from "next/router";
@@ -15,7 +16,7 @@ const RENT_ENTRY_CARD = "入館証貸出あり";
 const NOT_RENT_ENTRY_CARD = "入館証貸出なし";
 
 const columns = [
-  { field: "visitorID", headerName: "visitorID", width: 70 },
+  // { field: "visitorID", headerName: "visitorID", width: 70 },
   { field: "entryDateTime", headerName: "entryDateTime", width: 200 },
   { field: "attender", headerName: "attender", width: 200 },
   { field: "visitorName", headerName: "visitorName", width: 200 },
@@ -31,8 +32,15 @@ interface VisitorData {
   company: string;
 }
 
+// VisitorData型の定義
+interface CardData {
+  type: string;
+  number: number;
+}
+
 interface HomePageProps {
   initialData: VisitorData[];
+  rentCardData: CardData[];
 }
 
 // フォームのデータ型を定義
@@ -42,7 +50,13 @@ interface TestData {
   entryCardNumber: number;
 }
 
-const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
+const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
+  // キーボードが表示されているかどうか
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  // 選択されている氏名
+  const [visitorName, setVisitorName] = useState("");
+
   // 確認ダイアログ
   const [registrationOpen, setRegistrationOpen] = useState(false);
   const [successRegistrationOpen, setSuccessRegistrationOpen] = useState(false);
@@ -66,9 +80,8 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
   // フォームのバリデーションを更新
   useEffect(() => {
     const isFormChanged =
-      testData.visitorID != initialFormData.visitorID ||
-      testData.visitorID != initialFormData.visitorID ||
-      testData.visitorID != initialFormData.visitorID;
+      testData.visitorID != initialFormData.visitorID &&
+      testData.entryCardNumber != initialFormData.entryCardNumber;
     // 全てのデータが初期値と違うときは、登録ボタンを有効化
     if (isFormChanged) {
       setIsFormValid(true);
@@ -86,8 +99,6 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
     }));
     setRetentionCardType("Guest");
     setRetentionCardNumber(0);
-    // 読み込み
-    router.push("/registration-screen/EntryRegistration");
   }, [testData.visitorID]);
 
   // 情報取れてるかの確認。
@@ -129,18 +140,29 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
     }));
   };
 
-  // DataGrid の選択状態が変更されたときのコールバック
-  const handleSelectionModelChange = (selectionModel: any) => {
-    if (selectionModel.length > 0) {
-      const selectedVisitorID = parseInt(selectionModel[0], 10);
+// DataGrid の選択状態が変更されたときのコールバック
+const handleSelectionModelChange = (selectionModel: any) => {
+  if (selectionModel.length > 0) {
+    const selectedVisitorID = parseInt(selectionModel[0], 10);
 
-      // testDataのVisitorIDを変更
-      handleInputChange("visitorID", selectedVisitorID);
-    } else {
-      // 選択が解除された場合、0 を設定
-      handleInputChange("visitorID", 0);
+    // Find the selected visitor in the initialData array
+    const selectedVisitor = initialData.find(
+      (visitor) => visitor.visitorID === selectedVisitorID
+    );
+
+    if (selectedVisitor) {
+      // Set the visitorName to the selected visitor's name
+      setVisitorName(selectedVisitor.visitorName);
     }
-  };
+
+    // testDataのVisitorIDを変更
+    handleInputChange("visitorID", selectedVisitorID);
+  } else {
+    // 選択が解除された場合、0 を設定
+    handleInputChange("visitorID", 0);
+    setVisitorName(""); // Clear visitorName when no visitor is selected
+  }
+};
 
   // データを登録するハンドラ
   const handleInsertData = async () => {
@@ -183,7 +205,7 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
         }}
       />
       <SuccessfulRegistrationDialog
-        name={"てすと"}
+        name={visitorName}
         isOpen={successRegistrationOpen}
         onConfirm={() => {
           setSuccessRegistrationOpen(false);
@@ -208,6 +230,9 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
       <Head>
         <title>入館登録</title>
       </Head>
+
+      {keyboardVisible && <div className={styles.overlay}></div>}
+
       <div>
         {/* データの表示 */}
         <h2>入館情報</h2>
@@ -288,7 +313,15 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
             <h2 className={styles.h2}>番号</h2>
             <NumberInput
               onNumberChange={handleNumberChange}
+              // コールバック関数
+              keyboardVisibleChange={(visible: boolean) =>
+                setKeyboardVisible(visible)
+              }
               isDisabled={rentState !== RENT_ENTRY_CARD}
+              testDataNumber={testData.entryCardNumber}
+              // 貸出中のカード番号渡す
+              getRentCardData={rentCardData}
+              testDataType={testData.entryCardType}
             />
           </div>
         </div>
@@ -324,23 +357,31 @@ export const getServerSideProps: GetServerSideProps<
   HomePageProps
 > = async () => {
   // APIからデータを取得
-  const apiResponse = await getVisitorInputInformation();
+  const apiResponseVisitorInput = await getVisitorInputInformation();
+  const apiResponseRentCard = await getRentCardInformation();
 
-  if (apiResponse == "情報取得失敗") {
+  if (
+    apiResponseVisitorInput == "情報取得失敗" ||
+    apiResponseRentCard == "情報取得失敗"
+  ) {
     alert("情報取得に失敗しました");
     const initialData: VisitorData[] = [];
+    const rentCardData: CardData[] = [];
     return {
       props: {
         initialData,
+        rentCardData,
       },
     };
   }
   // ApiResponse型からVisitorData[]型に変換
-  const initialData: VisitorData[] = apiResponse.data;
+  const initialData: VisitorData[] = apiResponseVisitorInput.data;
+  const rentCardData: CardData[] = apiResponseRentCard.data;
 
   return {
     props: {
       initialData,
+      rentCardData,
     },
   };
 };

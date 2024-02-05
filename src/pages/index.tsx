@@ -1,4 +1,5 @@
 // pages/index.js
+import React from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
@@ -7,11 +8,13 @@ const HomePage = () => {
   const handlePageClick = () => {
     router.push("/registration-screen/VisitorRegistration");
   };
-  const buttonClickEn = () => {
+  const buttonClickEn = (e: React.MouseEvent<HTMLButtonElement>) => {
     router.push("/registration-screen/EntryRegistration");
+    e.stopPropagation();
   };
-  const buttonClickEx = () => {
+  const buttonClickEx = (e: React.MouseEvent<HTMLButtonElement>) => {
     router.push("/registration-screen/ExitRegistration");
+    e.stopPropagation();
   };
 
   const containerStyles = {
