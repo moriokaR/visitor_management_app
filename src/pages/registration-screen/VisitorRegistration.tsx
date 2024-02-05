@@ -8,6 +8,7 @@ import styles from "../../styles/VisitorRegistration.module.css";
 import RegistrationDialog from "../confirmation-dialog/registrationDialog";
 import SuccessfulRegistrationDialog from "../confirmation-dialog/successfulRegistrationDialog";
 import HomeDialog from "../confirmation-dialog/homeDialog";
+import FailureRegistrationDialog from "../alert-dialog/failureRegistrationDialog";
 
 // 会社ラジオボタン定数
 const COMPANY_TYPE_COMPANY = "会社名";
@@ -23,6 +24,9 @@ interface TestData {
 
 // メインのコンポーネント
 export default function VisitorRegistration() {
+  // アラート用
+  const [alertOpen, setAlertOpen] = useState(false);
+
   // 確認ダイアログ
   const [registrationOpen, setRegistrationOpen] = useState(false);
   const [successRegistrationOpen, setSuccessRegistrationOpen] = useState(false);
@@ -82,7 +86,8 @@ export default function VisitorRegistration() {
     if (Registration_result == "登録成功") {
       setSuccessRegistrationOpen(true);
     } else if (Registration_result == "登録失敗") {
-      alert("登録に失敗しました");
+      // alert("登録に失敗しました");
+      setAlertOpen(true);
     }
   };
 
@@ -139,6 +144,13 @@ export default function VisitorRegistration() {
 
   return (
     <div>
+      {/* アラートダイアログ */}
+      <FailureRegistrationDialog
+        isOpen={alertOpen}
+        onConfirm={() => {
+          setAlertOpen(false);
+        }}
+      />
       {/* 確認ダイアログ */}
       <RegistrationDialog
         isOpen={registrationOpen}

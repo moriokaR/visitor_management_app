@@ -11,6 +11,8 @@ import styles from "../../styles/EntryRegistration.module.css";
 import RegistrationDialog from "../confirmation-dialog/registrationDialog";
 import SuccessfulRegistrationDialog from "../confirmation-dialog/successfulRegistrationDialog";
 import HomeDialog from "../confirmation-dialog/homeDialog";
+import FailureRegistrationDialog from "../alert-dialog/failureRegistrationDialog";
+
 
 const RENT_ENTRY_CARD = "入館証貸出あり";
 const NOT_RENT_ENTRY_CARD = "入館証貸出なし";
@@ -51,6 +53,10 @@ interface TestData {
 }
 
 const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
+
+  // アラート用
+ const [alertOpen, setAlertOpen] = useState(false);
+
   // キーボードが表示されているかどうか
   const [keyboardVisible, setKeyboardVisible] = useState(false);
 
@@ -102,9 +108,9 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
   }, [testData.visitorID]);
 
   // 情報取れてるかの確認。
-  useEffect(() => {
-    console.log(testData);
-  }, [testData]);
+  // useEffect(() => {
+  //   console.log(testData);
+  // }, [testData]);
 
   const initialFormData = {
     visitorID: 0,
@@ -174,7 +180,8 @@ const handleSelectionModelChange = (selectionModel: any) => {
     if (Registration_result == "登録成功") {
       setSuccessRegistrationOpen(true);
     } else if (Registration_result == "登録失敗") {
-      alert("登録に失敗しました");
+      // alert("登録に失敗しました");
+      setAlertOpen(true);
     }
   };
 
@@ -193,6 +200,13 @@ const handleSelectionModelChange = (selectionModel: any) => {
   };
   return (
     <div>
+      {/* アラートダイアログ */}
+      <FailureRegistrationDialog
+        isOpen={alertOpen}
+        onConfirm={() => {
+          setAlertOpen(false);
+        }}
+      />
       {/* 確認ダイアログ */}
       <RegistrationDialog
         isOpen={registrationOpen}
@@ -364,6 +378,7 @@ export const getServerSideProps: GetServerSideProps<
     apiResponseVisitorInput == "情報取得失敗" ||
     apiResponseRentCard == "情報取得失敗"
   ) {
+    // カスタムアラートは無理そう
     alert("情報取得に失敗しました");
     const initialData: VisitorData[] = [];
     const rentCardData: CardData[] = [];

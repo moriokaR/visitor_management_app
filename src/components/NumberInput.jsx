@@ -1,6 +1,8 @@
 // components/NumberInput.jsx
 import React, { useState, useEffect } from "react";
 import styles from "../styles/NumberInput.module.css";
+import OutOfRengeDialog from "../pages/alert-dialog/outOfRengeDialog";
+import AlreadyRentDialog from "../pages/alert-dialog/alreadyRentDialog";
 
 const NumberInput = ({
   onNumberChange,
@@ -10,6 +12,11 @@ const NumberInput = ({
   getRentCardData,
   testDataType,
 }) => {
+  // アラート用
+  const [outOfRengeOpen, setOutOfRengeOpen] = useState(false);
+  const [alreadyRentOpen, setAlreadyRentOpen] = useState(false);
+  const [inNumber, setInNumber] = useState("");
+
   const [number, setNumber] = useState("");
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   // 現在のタイプの貸出中の番号の配列
@@ -19,7 +26,8 @@ const NumberInput = ({
     if (number.length === 2 && isKeyboardVisible) {
       const isValidNumber = /^(0?[1-9]|1[0-9]|20)$/.test(number);
       if (!isValidNumber) {
-        alert("番号は# 01~20です\n入力値:" + number);
+        // alert("番号は# 01~20です\n入力値:" + number);
+        setOutOfRengeOpen(true);
         setNumber("");
       }
       setKeyboardVisible(false);
@@ -48,14 +56,16 @@ const NumberInput = ({
     if (number.length === 2 && isKeyboardVisible) {
       const isAlreadyRented = rentCardNumber.includes(inNumber);
       if (isAlreadyRented) {
-        alert(
-          "この名札番号は貸出中です\n入力値:" +
-            number +
-            "\n貸出中 " +
-            testDataType +
-            ": " +
-            rentCardNumber
-        );
+        // alert(
+        //   "この名札番号は貸出中です\n入力値:" +
+        //     number +
+        //     "\n貸出中 " +
+        //     testDataType +
+        //     ": " +
+        //     rentCardNumber
+        // );
+        setInNumber(number);
+        setAlreadyRentOpen(true);
         setNumber("");
       }
       setKeyboardVisible(false);
@@ -69,13 +79,6 @@ const NumberInput = ({
       setNumber("");
     }
   }, [testDataNumber]);
-
-  //これいらなさそう
-  // useEffect(() => {
-  //   if (isDisabled === true && isKeyboardVisible === true) {
-  //     setKeyboardVisible(false);
-  //   }
-  // }, [isDisabled, isKeyboardVisible]);
 
   const handleKeyClick = (key) => {
     setNumber((prevNumber) => prevNumber + key);
@@ -96,59 +99,79 @@ const NumberInput = ({
   };
 
   return (
-    <div className={styles.NumberInput}>
-      <input
-        type="tel"
-        value={number}
-        placeholder="# 01~20"
-        readOnly
-        className={styles.inputField}
-        onClick={handleInputClick}
-        disabled={isDisabled}
+    <>
+      {/* アラートダイアログ */}
+      <OutOfRengeDialog
+        isOpen={outOfRengeOpen}
+        onConfirm={() => {
+          setOutOfRengeOpen(false);
+        }}
+        number={number}
       />
-      {isKeyboardVisible && (
-        <div className={styles.PopUp}>
-          <div>
-            貸出中&nbsp;
-            {testDataType}:{" "}
-            {rentCardNumber.map((cardNumber, index) => (
-              <span key={index} className={styles.rentCardNumber}>
-                {cardNumber},
-              </span>
-            ))}
-          </div>
-          <input
-            type="tel"
-            value={number}
-            placeholder="# 01~20"
-            readOnly
-            className={styles.inputField}
-          />
-          <div className={styles.keyboard}>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+      <AlreadyRentDialog
+        isOpen={alreadyRentOpen}
+        onConfirm={() => {
+          setAlreadyRentOpen(false);
+        }}
+        number={inNumber}
+        testDataType={testDataType}
+        rentCardNumber={rentCardNumber}
+      />
+      {/* キーボード */}
+      <div className={styles.NumberInput}>
+        <input
+          type="tel"
+          value={number}
+          placeholder="# 01~20"
+          readOnly
+          className={styles.inputField}
+          onClick={handleInputClick}
+          disabled={isDisabled}
+        />
+        {isKeyboardVisible && (
+          <div className={styles.PopUp}>
+            <div>
+              貸出中&nbsp;
+              {testDataType}:{" "}
+              {rentCardNumber.map((cardNumber, index) => (
+                <span key={index} className={styles.rentCardNumber}>
+                  {cardNumber},
+                </span>
+              ))}
+            </div>
+            <input
+              type="tel"
+              value={number}
+              placeholder="# 01~20"
+              readOnly
+              className={styles.inputField}
+            />
+            <div className={styles.keyboard}>
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+                <button
+                  key={num}
+                  onClick={() => handleKeyClick(String(num))}
+                  className={styles.button}
+                >
+                  {num}
+                </button>
+              ))}
+              <button className={styles.button}></button>
               <button
-                key={num}
-                onClick={() => handleKeyClick(String(num))}
+                key={0}
+                onClick={() => handleKeyClick(String(0))}
                 className={styles.button}
               >
-                {num}
+                0
               </button>
-            ))}
-            <button className={styles.button}></button>
-            <button
-              key={0}
-              onClick={() => handleKeyClick(String(0))}
-              className={styles.button}
-            >
-              0
-            </button>
-            <button onClick={handleBackspace} className={styles.button}>
-              Backspace
-            </button>
+              <button onClick={handleBackspace} className={styles.button}>
+                Backspace
+              </button>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 };
 
