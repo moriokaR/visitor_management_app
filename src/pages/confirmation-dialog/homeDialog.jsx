@@ -1,33 +1,18 @@
+// HomeDialog.jsx
 import * as React from "react";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-
+import CustomDialog from "../../components/CustomDialog";
 
 export default function HomeDialog({ isOpen, onConfirm, onCancel }) {
+  const content = "入力途中ですが、本当に戻りますか？";
+
   return (
-    <React.Fragment>
-      <Dialog
-        open={isOpen}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        sx={{
-          top: '-85%',
-          left: '0%',
-        }}
-      >
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            入力途中ですが、本当に戻りますか？
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onConfirm}>ok</Button>
-          <Button onClick={onCancel}>キャンセル</Button>
-        </DialogActions>
-      </Dialog>
-    </React.Fragment>
+    <CustomDialog 
+      isOpen={isOpen} 
+      content={content} 
+      confirmButtonLabel="OK" 
+      cancelButtonLabel="キャンセル" 
+      onConfirm={onConfirm} 
+      onCancel={onCancel} 
+    />
   );
 }

@@ -1,12 +1,12 @@
+// DialogComponent.jsx
 import * as React from "react";
-import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
+import Button from "@mui/material/Button";
 
-
-export default function OutOfRengeDialog({ isOpen, onConfirm, number }) {
+export default function CustomDialog({ isOpen, content, confirmButtonLabel, cancelButtonLabel, onConfirm, onCancel }) {
   return (
     <React.Fragment>
       <Dialog
@@ -20,13 +20,12 @@ export default function OutOfRengeDialog({ isOpen, onConfirm, number }) {
       >
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            番号は# 01~20です
-            <br />
-            入力値: {number}
+            {content}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={onConfirm}>ok</Button>
+          <Button onClick={onConfirm}>{confirmButtonLabel}</Button>
+          <Button onClick={onCancel}>{cancelButtonLabel}</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>

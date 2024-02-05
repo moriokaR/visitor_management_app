@@ -1,34 +1,23 @@
+// successfulRegistrationDialog.jsx
 import * as React from "react";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
+import CustomDialog from "../../components/CustomDialog";
 
 export default function SuccessfulRegistrationDialog({ name, isOpen, onConfirm, onCancel }) {
-  return (
+  const content = (
     <React.Fragment>
-      <Dialog
-        open={isOpen}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        sx={{
-          top: '-85%',
-          left: '0%',
-        }}
-      >
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-          {name + "さんの登録が完了しました。"}
-          <br />
-          登録を続けますか？
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onConfirm}>続ける</Button>
-          <Button onClick={onCancel}>終了</Button>
-        </DialogActions>
-      </Dialog>
+      {name}さんの登録が完了しました。<br />
+      登録を続けますか？
     </React.Fragment>
+  );
+
+  return (
+    <CustomDialog 
+      isOpen={isOpen} 
+      content={content} 
+      confirmButtonLabel="続ける" 
+      cancelButtonLabel="終了" 
+      onConfirm={onConfirm} 
+      onCancel={onCancel} 
+    />
   );
 }

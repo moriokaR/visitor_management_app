@@ -1,7 +1,7 @@
 // components/NumberInput.jsx
 import React, { useState, useEffect } from "react";
 import styles from "../styles/NumberInput.module.css";
-import OutOfRengeDialog from "../pages/alert-dialog/outOfRengeDialog";
+import OutOfRangeDialog from "../pages/alert-dialog/outOfRangeDialog";
 import AlreadyRentDialog from "../pages/alert-dialog/alreadyRentDialog";
 
 const NumberInput = ({
@@ -13,12 +13,12 @@ const NumberInput = ({
   testDataType,
 }) => {
   // アラート用
-  const [outOfRengeOpen, setOutOfRengeOpen] = useState(false);
+  const [outOfRangeOpen, setOutOfRangeOpen] = useState(false);
   const [alreadyRentOpen, setAlreadyRentOpen] = useState(false);
   const [inNumber, setInNumber] = useState("");
 
   const [number, setNumber] = useState("");
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   // 現在のタイプの貸出中の番号の配列
   const [rentCardNumber, setRentCardNumber] = useState([]);
 
@@ -27,10 +27,10 @@ const NumberInput = ({
       const isValidNumber = /^(0?[1-9]|1[0-9]|20)$/.test(number);
       if (!isValidNumber) {
         // alert("番号は# 01~20です\n入力値:" + number);
-        setOutOfRengeOpen(true);
+        setOutOfRangeOpen(true);
         setNumber("");
       }
-      setKeyboardVisible(false);
+      setIsKeyboardVisible(false);
     }
   }, [number, isKeyboardVisible]);
 
@@ -68,7 +68,7 @@ const NumberInput = ({
         setAlreadyRentOpen(true);
         setNumber("");
       }
-      setKeyboardVisible(false);
+      setIsKeyboardVisible(false);
     }
     onNumberChange(inNumber);
   }, [number]);
@@ -86,7 +86,7 @@ const NumberInput = ({
 
   const handleBackspace = () => {
     if (number.length === 0) {
-      setKeyboardVisible(false);
+      setIsKeyboardVisible(false);
     }
     setNumber((prevNumber) => prevNumber.slice(0, prevNumber.length - 1));
   };
@@ -95,16 +95,16 @@ const NumberInput = ({
     if (!isKeyboardVisible) {
       setNumber("");
     }
-    setKeyboardVisible(true);
+    setIsKeyboardVisible(true);
   };
 
   return (
     <>
       {/* アラートダイアログ */}
-      <OutOfRengeDialog
-        isOpen={outOfRengeOpen}
+      <OutOfRangeDialog
+        isOpen={outOfRangeOpen}
         onConfirm={() => {
-          setOutOfRengeOpen(false);
+          setOutOfRangeOpen(false);
         }}
         number={number}
       />
