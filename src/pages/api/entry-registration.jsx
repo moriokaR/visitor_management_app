@@ -16,7 +16,7 @@ export default async function handler(req, res) {
 
         // 入退館管理情報テーブルへのデータ挿入
         db.prepare(
-          "UPDATE entryexitManagements SET VisitorStatus = ?, EntryCardID = ? WHERE VisitorID = ?"
+          "UPDATE entryExitManagements SET VisitorStatus = ?, EntryCardID = ? WHERE VisitorID = ?"
         ).run("入館中", data.entryCardID, data.visitorID);
 
         // 入館証テーブルへのデータ挿入

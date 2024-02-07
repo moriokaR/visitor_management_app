@@ -3,7 +3,7 @@ import { GetServerSideProps } from "next";
 import { getVisitorInputInformation } from "../../information-processing/visitor-input-information";
 import { getRentCardInformation } from "../../information-processing/rent-card-information";
 import { entryRegistration } from "../../information-processing/entryRegistration";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, jaJP } from "@mui/x-data-grid";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import NumberInput from "../../components/NumberInput";
@@ -13,16 +13,15 @@ import SuccessfulRegistrationDialog from "../confirmation-dialog/successfulRegis
 import HomeDialog from "../confirmation-dialog/homeDialog";
 import FailureRegistrationDialog from "../alert-dialog/failureRegistrationDialog";
 
-
 const RENT_ENTRY_CARD = "入館証貸出あり";
 const NOT_RENT_ENTRY_CARD = "入館証貸出なし";
 
 const columns = [
   // { field: "visitorID", headerName: "visitorID", width: 70 },
-  { field: "entryDateTime", headerName: "entryDateTime", width: 200 },
-  { field: "attender", headerName: "attender", width: 200 },
-  { field: "visitorName", headerName: "visitorName", width: 200 },
-  { field: "company", headerName: "company", width: 200 },
+  { field: "entryDateTime", headerName: "日時", width: 200 },
+  { field: "visitorName", headerName: "氏名", width: 200 },
+  { field: "company", headerName: "会社", width: 200 },
+  { field: "attender", headerName: "当社対応者", width: 200 },
 ];
 
 // VisitorData型の定義
@@ -34,7 +33,7 @@ interface VisitorData {
   company: string;
 }
 
-// VisitorData型の定義
+// CardData型の定義
 interface CardData {
   type: string;
   number: number;
@@ -53,9 +52,8 @@ interface TestData {
 }
 
 const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
-
   // アラート用
- const [alertOpen, setAlertOpen] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
 
   // キーボードが表示されているかどうか
   const [keyboardVisible, setKeyboardVisible] = useState(false);
@@ -103,6 +101,7 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
       entryCardType: "Guest",
       entryCardNumber: 0,
     }));
+    setRentState(RENT_ENTRY_CARD);
     setRetentionCardType("Guest");
     setRetentionCardNumber(0);
   }, [testData.visitorID]);
@@ -138,7 +137,7 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
     handleInputChange("entryCardNumber", entryCardNumber);
   };
 
-  // TastDataの変更ハンドラ
+  // TestDataの変更ハンドラ
   const handleInputChange = (fieldName: string, value: string | number) => {
     setTestData((prevData) => ({
       ...prevData,
@@ -146,29 +145,29 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
     }));
   };
 
-// DataGrid の選択状態が変更されたときのコールバック
-const handleSelectionModelChange = (selectionModel: any) => {
-  if (selectionModel.length > 0) {
-    const selectedVisitorID = parseInt(selectionModel[0], 10);
+  // DataGrid の選択状態が変更されたときのコールバック
+  const handleSelectionModelChange = (selectionModel: any) => {
+    if (selectionModel.length > 0) {
+      const selectedVisitorID = parseInt(selectionModel[0], 10);
 
-    // Find the selected visitor in the initialData array
-    const selectedVisitor = initialData.find(
-      (visitor) => visitor.visitorID === selectedVisitorID
-    );
+      // Find the selected visitor in the initialData array
+      const selectedVisitor = initialData.find(
+        (visitor) => visitor.visitorID === selectedVisitorID
+      );
 
-    if (selectedVisitor) {
-      // Set the visitorName to the selected visitor's name
-      setVisitorName(selectedVisitor.visitorName);
+      if (selectedVisitor) {
+        // Set the visitorName to the selected visitor's name
+        setVisitorName(selectedVisitor.visitorName);
+      }
+
+      // testDataのVisitorIDを変更
+      handleInputChange("visitorID", selectedVisitorID);
+    } else {
+      // 選択が解除された場合、0 を設定
+      handleInputChange("visitorID", 0);
+      setVisitorName(""); // Clear visitorName when no visitor is selected
     }
-
-    // testDataのVisitorIDを変更
-    handleInputChange("visitorID", selectedVisitorID);
-  } else {
-    // 選択が解除された場合、0 を設定
-    handleInputChange("visitorID", 0);
-    setVisitorName(""); // Clear visitorName when no visitor is selected
-  }
-};
+  };
 
   // データを登録するハンドラ
   const handleInsertData = async () => {
@@ -193,6 +192,7 @@ const handleSelectionModelChange = (selectionModel: any) => {
       entryCardType: "Guest",
       entryCardNumber: 0,
     });
+    setRentState(RENT_ENTRY_CARD);
     setRetentionCardType("Guest");
     setRetentionCardNumber(0);
     // 読み込み
@@ -260,6 +260,7 @@ const handleSelectionModelChange = (selectionModel: any) => {
           pageSizeOptions={[5, 10, 25]}
           onRowSelectionModelChange={handleSelectionModelChange} // 選択状態変更時のコールバック
           getRowId={(row) => row.visitorID}
+          localeText={jaJP.components.MuiDataGrid.defaultProps.localeText}
         />
       </div>
 
@@ -284,6 +285,7 @@ const handleSelectionModelChange = (selectionModel: any) => {
             <div>
               <input
                 type="radio"
+                id="Guest"
                 defaultValue="Guest"
                 checked={retentionCardType === "Guest"}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -293,10 +295,12 @@ const handleSelectionModelChange = (selectionModel: any) => {
                 }}
                 disabled={rentState !== RENT_ENTRY_CARD}
               />
-              Guest
+              <label htmlFor="Guest">Guest</label>
+
               <br />
               <input
                 type="radio"
+                id="リクルートカード"
                 defaultValue="リクルートカード"
                 checked={retentionCardType === "リクルートカード"}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -306,10 +310,12 @@ const handleSelectionModelChange = (selectionModel: any) => {
                 }}
                 disabled={rentState !== RENT_ENTRY_CARD}
               />
-              リクルートカード
+              <label htmlFor="リクルートカード">リクルートカード</label>
+
               <br />
               <input
                 type="radio"
+                id="その他"
                 defaultValue="その他"
                 checked={retentionCardType === "その他"}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -319,7 +325,7 @@ const handleSelectionModelChange = (selectionModel: any) => {
                 }}
                 disabled={rentState !== RENT_ENTRY_CARD}
               />
-              その他
+              <label htmlFor="その他">その他</label>
             </div>
           </div>
           <div>
