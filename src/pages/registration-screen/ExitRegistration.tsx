@@ -13,8 +13,8 @@ import HomeDialog from "../confirmation-dialog/homeDialog";
 import FailureRegistrationDialog from "../alert-dialog/failureRegistrationDialog";
 
 const columns = [
-  { field: "VisitorID", headerName: "visitorID", width: 70 },
-  { field: "entrycardid", headerName: "入館証ID", width: 70 },
+  // { field: "VisitorID", headerName: "visitorID", width: 70 },
+  // { field: "entrycardid", headerName: "入館証ID", width: 70 },
   { field: "entrydatetime", headerName: "日時", width: 200 },
   { field: "visitorname", headerName: "氏名", width: 200 },
   { field: "company", headerName: "会社", width: 200 },
@@ -32,7 +32,7 @@ interface VisitorData {
   visitorname: string;
   company: string;
   type: string;
-  number: number;
+  number: number | string;
 }
 
 interface HomePageProps {
@@ -55,6 +55,10 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
   // 選択されている氏名
   const [visitorNames, setVisitorNames] = useState<string[]>([]);
 
+  // 選択されている退館登録者名
+  const [SelectExitUser, setSelectExitUser] = useState<string>("牧島史子");
+  const [InExitUser, setInExitUser] = useState<string>("");
+
   // 確認ダイアログ
   const [registrationOpen, setRegistrationOpen] = useState(false);
   const [successRegistrationOpen, setSuccessRegistrationOpen] = useState(false);
@@ -67,7 +71,7 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
     VisitorIDs: [],
     EntryCardIDs: [],
     ExitDateTime: new Date(),
-    ExitUser: "その他",
+    ExitUser: "牧島史子",
     Comment: "",
   });
 
@@ -78,13 +82,14 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
     VisitorIDs: [],
     EntryCardIDs: [],
     ExitDateTime: new Date(),
-    ExitUser: "その他",
+    ExitUser: "牧島史子",
     Comment: "",
   });
 
   // フォームのバリデーションを更新
   useEffect(() => {
-    const isFormChanged = testData.VisitorIDs.length != 0;
+    const isFormChanged =
+      testData.VisitorIDs.length != 0 && testData.ExitUser.trim() != "";
     // IDが空じゃない場合は、登録ボタンを有効化
     if (isFormChanged) {
       setIsFormValid(true);
@@ -196,19 +201,29 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
       VisitorIDs: [],
       EntryCardIDs: [],
       ExitDateTime: new Date(),
-      ExitUser: "その他",
+      ExitUser: "牧島史子",
       Comment: "",
     });
     setInitialFormData({
       VisitorIDs: [],
       EntryCardIDs: [],
       ExitDateTime: new Date(),
-      ExitUser: "その他",
+      ExitUser: "牧島史子",
       Comment: "",
     });
     // 読み込み
     router.push("/registration-screen/ExitRegistration");
   };
+
+  // 退館登録者の設定
+  useEffect(() => {
+    if (SelectExitUser == "その他") {
+      handleInputChange("ExitUser", InExitUser);
+    } else {
+      setInExitUser("");
+      handleInputChange("ExitUser", SelectExitUser);
+    }
+  }, [SelectExitUser, InExitUser]);
 
   return (
     <div>
@@ -279,9 +294,30 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
         {/* 退館登録者の入力フォーム */}
         {/* これと、登録完了した人の、分け目を作る */}
         <h2 className={styles.h2}>退館登録者</h2>
-
-
-
+        <label>
+          <select
+            value={SelectExitUser}
+            onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+              setSelectExitUser(e.target.value);
+            }}
+          >
+            <option value="牧島史子">牧島史子</option>
+            <option value="門村奈津子">門村奈津子</option>
+            <option value="財賀雅二">財賀雅二</option>
+            <option value="その他">その他</option>
+          </select>
+        </label>
+        {SelectExitUser == "その他" && (
+          <label>
+            <input
+              type="text"
+              value={InExitUser}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setInExitUser(e.target.value)
+              }
+            />
+          </label>
+        )}
 
         {/* 入館日時の入力フォーム */}
         <h2 className={styles.h2}>退館日時</h2>

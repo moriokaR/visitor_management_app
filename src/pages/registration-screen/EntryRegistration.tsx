@@ -48,7 +48,7 @@ interface HomePageProps {
 interface TestData {
   visitorID: number;
   entryCardType: string;
-  entryCardNumber: number;
+  entryCardNumber: number | string;
 }
 
 const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
@@ -354,8 +354,8 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
           onChange={() => {
             setRentState(NOT_RENT_ENTRY_CARD);
             // testDataへ追加
-            handleInputChange("entryCardType", "未貸出");
-            handleInputChange("entryCardNumber", 99);
+            handleInputChange("entryCardType", "-");
+            handleInputChange("entryCardNumber", "-");
           }}
         />
         入館証貸出なし
