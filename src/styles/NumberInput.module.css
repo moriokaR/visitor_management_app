@@ -1,0 +1,52 @@
+/* styles/NumberInput.module.css */
+.NumberInput {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0px;
+}
+
+.inputField {
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.keyboard {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+}
+
+.emptyButton {
+  visibility: hidden;
+}
+
+.button {
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+/* styles/PopUp.module.css */
+.PopUp {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  /* オーバーレイよりも前面に */
+  z-index: 1500;
+  text-align: center; /* 水平方向に真ん中にするための追加 */
+}
+
+.inputFieldPoP {
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 15px;
+  margin: 5 auto;
+}

@@ -38,7 +38,7 @@ export default async function handler(req, res) {
         db.close();
 
         // エラー時にステータスコード500とメッセージを返す
-        res.status(500).json({ message: `Internal Server Error` });
+        res.status(500).json({ message: "Internal Server Error" });
       }
     } catch (error) {
       // POSTリクエストからデータを取得できなかった場合のエラー処理

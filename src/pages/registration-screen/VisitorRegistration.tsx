@@ -1,9 +1,14 @@
 // src\pages\posts\VisitorRegistration.tsx
 import React, { useState, useEffect, ChangeEvent } from "react";
-import { visitorRegistration } from "../../util/information-processing";
+import { visitorRegistration } from "../../information-processing/visitorRegistration";
+import { useRouter } from "next/router";
 import Head from "next/head";
-import Link from "next/link";
 import InputDateTime from "../../components/InputDateTime"; // InputDateTimeコンポーネントをインポート
+import styles from "../../styles/VisitorRegistration.module.css";
+import RegistrationDialog from "../confirmation-dialog/registrationDialog";
+import SuccessfulRegistrationDialog from "../confirmation-dialog/successfulRegistrationDialog";
+import HomeDialog from "../confirmation-dialog/homeDialog";
+import FailureRegistrationDialog from "../alert-dialog/failureRegistrationDialog";
 
 // 会社ラジオボタン定数
 const COMPANY_TYPE_COMPANY = "会社名";
@@ -19,6 +24,14 @@ interface TestData {
 
 // メインのコンポーネント
 export default function VisitorRegistration() {
+  // アラート用
+  const [alertOpen, setAlertOpen] = useState(false);
+
+  // 確認ダイアログ
+  const [registrationOpen, setRegistrationOpen] = useState(false);
+  const [successRegistrationOpen, setSuccessRegistrationOpen] = useState(false);
+  const [homeOpen, setHomeOpen] = useState(false);
+
   // フォームの状態を管理するためのstate
   const [testData, setTestData] = useState<TestData>({
     visitorName: "",
@@ -26,6 +39,26 @@ export default function VisitorRegistration() {
     entryDateTime: new Date(),
     attender: "",
   });
+
+  // フォームの初期値を保存するための初期ステート
+  const [initialFormData, setInitialFormData] = useState<TestData>({
+    visitorName: "",
+    company: "",
+    entryDateTime: new Date(),
+    attender: "",
+  });
+
+  const router = useRouter();
+  // ホームボタンクリック
+  const buttonClickHome = () => {
+    const isFormChanged =
+      JSON.stringify(initialFormData) !== JSON.stringify(testData);
+    if (isFormChanged) {
+      setHomeOpen(true);
+    } else {
+      router.push("/");
+    }
+  };
 
   // フォームのバリデーション状態
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
@@ -45,10 +78,29 @@ export default function VisitorRegistration() {
 
   // データを登録するハンドラ
   const handleInsertData = async () => {
-    await visitorRegistration(testData);
+    setRegistrationOpen(true);
+  };
+  // 登録しますか？　ok処理
+  const okRegistration = async () => {
+    const Registration_result = await visitorRegistration(testData);
+    if (Registration_result == "登録成功") {
+      setSuccessRegistrationOpen(true);
+    } else if (Registration_result == "登録失敗") {
+      // alert("登録に失敗しました");
+      setAlertOpen(true);
+    }
+  };
 
+  // 登録　続ける
+  const continueRegistration = async () => {
     // 登録後、フォームをクリア
     setTestData({
+      visitorName: "",
+      company: "",
+      entryDateTime: new Date(),
+      attender: "",
+    });
+    setInitialFormData({
       visitorName: "",
       company: "",
       entryDateTime: new Date(),
@@ -67,7 +119,7 @@ export default function VisitorRegistration() {
     }));
   };
 
-  // テキスト入力の変更ハンドラ
+  // 入力の変更ハンドラ
   const handleInputChange = (fieldName: string, value: string) => {
     setTestData((prevData) => ({
       ...prevData,
@@ -92,26 +144,79 @@ export default function VisitorRegistration() {
 
   return (
     <div>
+      {/* アラートダイアログ */}
+      <FailureRegistrationDialog
+        isOpen={alertOpen}
+        onConfirm={() => {
+          setAlertOpen(false);
+        }}
+      />
+      {/* 確認ダイアログ */}
+      <RegistrationDialog
+        isOpen={registrationOpen}
+        onConfirm={() => {
+          setRegistrationOpen(false);
+          okRegistration();
+        }}
+        onCancel={() => {
+          setRegistrationOpen(false);
+        }}
+      />
+      <SuccessfulRegistrationDialog
+        name={testData.visitorName}
+        isOpen={successRegistrationOpen}
+        onConfirm={() => {
+          setSuccessRegistrationOpen(false);
+          continueRegistration();
+        }}
+        onCancel={() => {
+          setSuccessRegistrationOpen(false);
+          router.push("/");
+        }}
+      />
+      <HomeDialog
+        isOpen={homeOpen}
+        onConfirm={() => {
+          setHomeOpen(false);
+          router.push("/");
+        }}
+        onCancel={() => {
+          setHomeOpen(false);
+        }}
+      />
+
       {/* ヘッド要素 */}
       <Head>
         <title>来客者登録</title>
       </Head>
       {/* タイトル */}
       <h1>来客者登録</h1>
-      {/* ホームに戻るリンク */}
-      <Link href="/">ホームに戻る</Link>
       <div>
-        {/* 来客者名の入力フォーム */}
+        {/* 入館日時の入力フォーム */}
+        <h2 className={styles.h2}>入館日時</h2>
         <label>
-          来客者名：
+          <InputDateTime
+            selectedDate={testData.entryDateTime}
+            onChange={handleDateTimeChange}
+          />
+        </label>
+        <br />
+        {/* 来客者名の入力フォーム */}
+        <h2 className={styles.h2}>氏名</h2>
+        ※フルネームでご記入ください
+        <br />
+        <label>
           <input
             type="text"
             value={testData.visitorName}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange("visitorName", e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              handleInputChange("visitorName", e.target.value)
+            }
           />
         </label>
         <br />
         {/* 会社名または当社のラジオボタン */}
+        <h2 className={styles.h2}>会社</h2>
         <label>
           <input
             type="radio"
@@ -147,7 +252,7 @@ export default function VisitorRegistration() {
             {/* 事業所の選択ラジオボタン */}
             <input
               type="radio"
-              value="RITS他事業所"
+              defaultValue="RITS他事業所"
               checked={companyOffice === "RITS他事業所"}
               onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 handleInputChangeCompanyOffice("RITS他事業所");
@@ -159,7 +264,7 @@ export default function VisitorRegistration() {
             <br />
             <input
               type="radio"
-              value="RITS鳥取事業所"
+              defaultValue="RITS鳥取事業所"
               checked={companyOffice === "RITS鳥取事業所"}
               onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 handleInputChangeCompanyOffice("RITS鳥取事業所");
@@ -170,23 +275,15 @@ export default function VisitorRegistration() {
             鳥取事業所
           </div>
         </label>
-        <br />
-        {/* 来訪日時の入力フォーム */}
-        <label>
-          来訪日時：
-          <InputDateTime
-            selectedDate={testData.entryDateTime}
-            onChange={handleDateTimeChange}
-          />
-        </label>
-        <br />
         {/* 担当者の入力フォーム */}
+        <h2 className={styles.h2}>当社対応者</h2>
         <label>
-          担当者：
           <input
             type="text"
             value={testData.attender}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange("attender", e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              handleInputChange("attender", e.target.value)
+            }
           />
         </label>
         <br />
@@ -195,6 +292,8 @@ export default function VisitorRegistration() {
           登録
         </button>
       </div>
+      {/* ホームボタン */}
+      <button onClick={buttonClickHome}>ホームへ</button>
     </div>
   );
 }
