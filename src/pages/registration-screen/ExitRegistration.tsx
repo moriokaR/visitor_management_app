@@ -75,9 +75,6 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
     Comment: "",
   });
 
-  // これは登録を続けるときに使う！！！setInitialFormData
-  // 登録時は、未貸し出しの考慮も行う！！！！　安直に、貸出可にしない！！！！
-
   const [initialFormData, setInitialFormData] = useState<TestData>({
     VisitorIDs: [],
     EntryCardIDs: [],
@@ -99,10 +96,10 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
   }, [testData]);
 
   //   情報取れてるかの確認。
-  useEffect(() => {
-    console.log(testData);
-    console.log(visitorNames);
-  }, [testData]);
+  // useEffect(() => {
+  //   console.log(testData);
+  //   console.log(visitorNames);
+  // }, [testData]);
 
   const router = useRouter();
 
