@@ -3,6 +3,7 @@
 import React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import styles from "/src/styles/InputDateTime.module.css";
 
 /**
  * @param selectedDate - 選択された日付と時刻
@@ -18,7 +19,7 @@ const InputDateTime = ({ selectedDate, onChange }) => {
       timeIntervals={15}
       dateFormat="yyyy/MM/dd, hh:mm aa"
       timeCaption="Time"
-      customInput={<CustomInput />} // カスタム入力フィールドを指定し、その中でreadOnlyを設定
+      customInput={<CustomInput />}
     />
   );
 };
@@ -27,11 +28,10 @@ const InputDateTime = ({ selectedDate, onChange }) => {
 const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
   <input
     value={value}
-    // defaultValue={value}
     onClick={onClick}
-    // onChange={onChange}
-    readOnly // readOnlyを設定
+    readOnly
     ref={ref}
+    className={styles.datePicker}
   />
 ));
 
