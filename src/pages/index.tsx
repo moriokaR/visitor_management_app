@@ -2,6 +2,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import styles from "../styles/index.module.css";
 
 const HomePage = () => {
   const router = useRouter();

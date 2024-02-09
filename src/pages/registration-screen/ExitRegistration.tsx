@@ -15,12 +15,12 @@ import FailureRegistrationDialog from "../alert-dialog/failureRegistrationDialog
 const columns = [
   // { field: "VisitorID", headerName: "visitorID", width: 70 },
   // { field: "entrycardid", headerName: "入館証ID", width: 70 },
-  { field: "entrydatetime", headerName: "日時", width: 200 },
-  { field: "visitorname", headerName: "氏名", width: 200 },
-  { field: "company", headerName: "会社", width: 200 },
-  { field: "attender", headerName: "当社対応者", width: 200 },
-  { field: "type", headerName: "入館証種別", width: 200 },
-  { field: "number", headerName: "入館証番号", width: 200 },
+  { field: "entrydatetime", headerName: "日時", width: 140 },
+  { field: "visitorname", headerName: "氏名", width: 130 },
+  { field: "company", headerName: "会社", width: 180 },
+  { field: "attender", headerName: "当社対応者", width: 130 },
+  { field: "type", headerName: "入館証種別", width: 85 },
+  { field: "number", headerName: "入館証番号", width: 85 },
 ];
 
 // VisitorData型の定義
@@ -223,7 +223,11 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
   }, [SelectExitUser, InExitUser]);
 
   return (
-    <div>
+    <div className={styles.content}>
+      {/* ヘッド要素 */}
+      <Head>
+        <title>退館登録</title>
+      </Head>
       {/* アラートダイアログ */}
       <FailureRegistrationDialog
         isOpen={alertOpen}
@@ -266,18 +270,20 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
           setHomeOpen(false);
         }}
       />
-      {/* ヘッド要素 */}
-      <Head>
-        <title>退館登録</title>
-      </Head>
-
-      <div>
+      {/* 退館登録画面 */}
+      <div className={styles.box}>
+        {/* タイトル */}
+        <h1 className={styles.h1}>退館登録</h1>
         {/* データの表示 */}
-        <h2>退館情報</h2>
         <DataGrid
           rows={initialData}
           columns={columns}
-          style={{ height: "371px", width: "98%", margin: "0 auto", backgroundColor: "#ffffff" }}
+          style={{
+            height: "371px",
+            width: "98%",
+            margin: "0 auto",
+            backgroundColor: "#ffffff",
+          }}
           initialState={{
             pagination: { paginationModel: { pageSize: 5 } },
           }}
@@ -286,13 +292,11 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
           checkboxSelection
           localeText={jaJP.components.MuiDataGrid.defaultProps.localeText}
         />
-      </div>
-      <div>
         {/* 退館登録者の入力フォーム */}
-        {/* これと、登録完了した人の、分け目を作る */}
         <h2 className={styles.h2}>退館登録者</h2>
-        <label>
+        <label className={styles.labelSelect}>
           <select
+            className={styles.selectField}
             value={SelectExitUser}
             onChange={(e: ChangeEvent<HTMLSelectElement>) => {
               setSelectExitUser(e.target.value);
@@ -305,8 +309,9 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
           </select>
         </label>
         {SelectExitUser == "その他" && (
-          <label>
+          <label className={styles.inputLabel}>
             <input
+              className={styles.inputField}
               type="text"
               value={InExitUser}
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -318,18 +323,19 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
 
         {/* 入館日時の入力フォーム */}
         <h2 className={styles.h2}>退館日時</h2>
-        <label>
+        <label className={styles.labelDateTime}>
           <InputDateTime
             selectedDate={testData.ExitDateTime}
             onChange={handleDateTimeChange}
           />
         </label>
-        <br />
+
         {/* コメントの入力フォーム */}
         <h2 className={styles.h2}>コメント</h2>
-        <br />
-        <label>
+
+        <label className={styles.inputLabel}>
           <input
+            className={styles.inputField}
             type="text"
             value={testData.Comment}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -337,16 +343,27 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
             }
           />
         </label>
-        <br />
-      </div>
+        {/* 登録ボタン */}
+        <button
+          className={
+            SelectExitUser != "その他"
+              ? `${styles.buttonInsertData} ${styles.button}`
+              : `${styles.buttonInsertDataSonota} ${styles.button}`
+          }
+          onClick={handleInsertData}
+          disabled={!isFormValid}
+        >
+          登録
+        </button>
 
-      {/* 登録ボタン */}
-      <button onClick={handleInsertData} disabled={!isFormValid}>
-        登録
-      </button>
-      <br />
-      {/* ホームボタン */}
-      <button onClick={buttonClickHome}>ホームへ</button>
+        {/* ホームボタン */}
+        <button
+          className={`${styles.buttonClickHome} ${styles.button}`}
+          onClick={buttonClickHome}
+        >
+          ホームへ
+        </button>
+      </div>
     </div>
   );
 };
