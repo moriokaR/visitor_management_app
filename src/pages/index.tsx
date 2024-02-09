@@ -64,13 +64,16 @@ const HomePage = () => {
 
         <div>
           <center>
-            <h1>ようこそ！</h1>
-            <h1>リコーITソリューションズ</h1>
-            <h1>鳥取事業所へ！</h1>
-            <br></br>
-            <h3>いらっしゃいませ。</h3>
-            <h3>画面をタップして、</h3>
-            <h3>お客様情報を登録してください。</h3>
+            <h1 className={openEnExBotton ? styles.h1TopOpen : styles.h1Top}>
+              ようこそ！
+            </h1>
+            <h1 className={styles.h1}>リコーITソリューションズ</h1>
+            <h1 className={styles.h1}>鳥取事業所へ！</h1>
+            <label className={styles.labelTop}>いらっしゃいませ。</label>
+            <label className={styles.label}>画面をタップして、</label>
+            <label className={styles.label}>
+              お客様情報を登録してください。
+            </label>
           </center>
         </div>
       </div>

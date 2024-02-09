@@ -1,3 +1,42 @@
+.h1Top {
+  /* margin: 0; */
+  margin-top: 250px;
+  text-align: center;
+  font-size: 50px;
+  margin-bottom: 5px;
+}
+.h1TopOpen {
+  /* margin: 0; */
+  margin-top: 115px;
+  text-align: center;
+  font-size: 50px;
+  margin-bottom: 5px;
+}
+.h1 {
+  /* margin: 0; */
+  margin-top: 5px;
+  text-align: center;
+  font-size: 50px;
+  margin-bottom: 5px;
+}
+
+.labelTop {
+  /* margin: 0; */
+  margin-top: 100px;
+  text-align: center;
+  display: block;
+  font-size: 40px;
+  margin-bottom: 50px;
+}
+.label {
+  /* margin: 0; */
+  margin-top: 5px;
+  text-align: center;
+  display: block;
+  font-size: 40px;
+  margin-bottom: 5px;
+}
+
 .content {
   width: 100%;
   height: 100%;
@@ -24,16 +63,14 @@
 
 /* ホームボタン透明度 */
 .buttonEnExV {
-    opacity: 0;
-    /* position: absolute; */
-    pointer-events: auto; /* ボタンの操作を有効にする */
+  opacity: 0;
+  /* position: absolute; */
+  pointer-events: auto; /* ボタンの操作を有効にする */
 
-
-
-    width: 30%;
-    margin-top: 5px;
-    margin-left: 69%;
-    font-size: 20px; /* 例として24pxに変更 */
-    display: block;
-    padding: 15px 20px; /* 例として上下に15px、左右に20pxのpaddingを追加 */
-  }
+  width: 30%;
+  margin-top: 5px;
+  margin-left: 69%;
+  font-size: 20px; /* 例として24pxに変更 */
+  display: block;
+  padding: 15px 20px; /* 例として上下に15px、左右に20pxのpaddingを追加 */
+}
