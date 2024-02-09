@@ -1,3 +1,5 @@
+// src/pages/registration-screen/EntryRegistration.tsx
+
 import React, { useState, useEffect, ChangeEvent } from "react";
 import { GetServerSideProps } from "next";
 import { getVisitorInputInformation } from "../../information-processing/visitor-input-information";
@@ -106,10 +108,20 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
     setRetentionCardNumber(0);
   }, [testData.visitorID]);
 
+  // Typeが変わったとき、番号初期化
+  useEffect(() => {
+    if (testData.entryCardType != "-") {
+      setTestData((prevData) => ({
+        ...prevData,
+        entryCardNumber: 0,
+      }));
+      setRetentionCardNumber(0);
+    }
+  }, [testData.entryCardType]);
   // 情報取れてるかの確認。
-  // useEffect(() => {
-  //   console.log(testData);
-  // }, [testData]);
+  useEffect(() => {
+    console.log(testData);
+  }, [testData]);
 
   const initialFormData = {
     visitorID: 0,
@@ -206,6 +218,8 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
       </Head>
       {/* アラートダイアログ */}
       <FailureRegistrationDialog
+        failureName={[]}
+        successfulName={[]}
         isOpen={alertOpen}
         onConfirm={() => {
           setAlertOpen(false);
@@ -255,7 +269,12 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
         <DataGrid
           rows={initialData}
           columns={columns}
-          style={{ height: "371px", width: "98%", margin: "0 auto", backgroundColor: "#ffffff" }}
+          style={{
+            height: "370px",
+            width: "98%",
+            margin: "0 auto",
+            backgroundColor: "#ffffff",
+          }}
           initialState={{
             pagination: { paginationModel: { pageSize: 5 } },
           }}
@@ -356,6 +375,7 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
               // testDataへ追加
               handleInputChange("entryCardType", "-");
               handleInputChange("entryCardNumber", "-");
+              console.log();
             }}
           />
           <label className={styles.rentLabel} htmlFor="NOT_RENT_ENTRY_CARD">
