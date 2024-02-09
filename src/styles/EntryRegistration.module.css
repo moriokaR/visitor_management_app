@@ -1,12 +1,94 @@
-.h2 {
-    margin: 0; /* 上下の余白をゼロに設定 */
-    text-align: center;
-  }
+/* src/styles/VisitorRegistration.module.css */
 
-  .radioButton{
-    display: flex;
-    justify-content: center; /* 水平方向の中央寄せ */
-  }
+.content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.box {
+  background: #eee;
+  width: 820px;
+  height: 1180px;
+}
+
+
+
+.h1 {
+  /* margin: 0; */
+  text-align: center;
+  font-size: 60px; /* 例として24pxに調整 */
+  margin-bottom: 0px;
+}
+
+
+.h2 {
+  margin: 0;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  /* text-align: center; */
+  margin-left: 30%;
+  font-size: 45px; /* 例として24pxに調整 */
+}
+
+/* 貸出番号 */
+
+.radioLabelRent {
+  display: block;
+  margin-top: 20px;
+  /* margin-bottom: 30px; */
+  margin-left: 20%;
+}
+
+.radioInput {
+  transform: scale(2); /* ラジオボタンの大きさを調整 */
+  margin-right: 15px; /* ボタンの右に余白を追加 */
+  position: relative; /* 新しく追加 */
+  top: -3.5px; /* お好みの値に調整してください */
+}
+
+.rentLabel {
+  font-size: 35px;
+}
+
+.companyInputField {
+  width: 60%;
+  padding: 5px;
+  box-sizing: border-box;
+  font-size: 30px;
+}
+
+.radioLabelType {
+  /* margin-top: 15px; */
+  margin-left: 10%;
+  margin-top: 10px;
+  font-size: 25px;
+}
+
+/* 登録ボタン */
+.buttonInsertData {
+  width: 25%;
+  margin-top: 10px;
+  margin-left: 37.5%;
+  font-size: 30px; /* 例として24pxに変更 */
+  padding: 15px 20px; /* 例として上下に15px、左右に20pxのpaddingを追加 */
+}
+
+/* ホームボタン */
+.buttonClickHome {
+  width: 20%;
+  margin-top: 0.5px;
+  margin-left: 2.5%;
+  font-size: 24px; /* 例として24pxに変更 */
+  display: block;
+  padding: 15px 20px; /* 例として上下に15px、左右に20pxのpaddingを追加 */
+}
+
+
+
+
 
   .overlay {
     position: fixed;
