@@ -277,10 +277,10 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
         <DataGrid
           rows={initialData}
           columns={columns}
+          style={{ height: "371px", width: "98%", margin: "0 auto", backgroundColor: "#ffffff" }}
           initialState={{
             pagination: { paginationModel: { pageSize: 5 } },
           }}
-          pageSizeOptions={[5, 10, 25]}
           onRowSelectionModelChange={handleSelectionModelChange} // 選択状態変更時のコールバック
           getRowId={(row) => row.VisitorID}
           checkboxSelection

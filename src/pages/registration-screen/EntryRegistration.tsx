@@ -255,7 +255,7 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
         <DataGrid
           rows={initialData}
           columns={columns}
-          style={{ height: "371px" }}
+          style={{ height: "371px", width: "98%", margin: "0 auto", backgroundColor: "#ffffff" }}
           initialState={{
             pagination: { paginationModel: { pageSize: 5 } },
           }}
