@@ -205,7 +205,7 @@ export default function VisitorRegistration() {
         </label>
         {/* 来客者名の入力フォーム */}
         <h2 className={styles.h2}>氏名</h2>
-        <label className={styles.hintLabel}>※フルネームでご記入ください</label>
+        <label className={styles.hintLabel}>※フルネームでご入力ください</label>
         <label className={styles.inputLabel}>
           <input
             className={styles.inputField}

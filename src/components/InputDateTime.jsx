@@ -20,6 +20,7 @@ const InputDateTime = ({ selectedDate, onChange }) => {
       dateFormat="yyyy/MM/dd, hh:mm aa"
       timeCaption="Time"
       customInput={<CustomInput />}
+      calendarClassName={styles.customCalendar}
     />
   );
 };

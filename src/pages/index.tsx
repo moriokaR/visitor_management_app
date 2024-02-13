@@ -69,8 +69,7 @@ const HomePage = () => {
             </h1>
             <h1 className={styles.h1}>リコーITソリューションズ</h1>
             <h1 className={styles.h1}>鳥取事業所へ！</h1>
-            <label className={styles.labelTop}>いらっしゃいませ。</label>
-            <label className={styles.label}>画面をタップして、</label>
+            <label className={styles.labelTop}>画面をタップして、</label>
             <label className={styles.label}>
               お客様情報を登録してください。
             </label>
