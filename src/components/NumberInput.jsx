@@ -100,7 +100,6 @@ const NumberInput = ({
         onConfirm={() => {
           setOutOfRangeOpen(false);
         }}
-        number={number}
       />
       <AlreadyRentDialog
         isOpen={alreadyRentOpen}
