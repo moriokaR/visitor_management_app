@@ -382,20 +382,24 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
             入館証貸出なし
           </label>
         </div>
-        {/* 登録ボタン */}
-        <button
-          className={`${styles.buttonInsertData} ${styles.button}`}
-          onClick={handleInsertData}
-          disabled={!isFormValid}
-        >
-          登録
-        </button>
         {/* ホームボタン */}
         <button
           className={`${styles.buttonClickHome} ${styles.button}`}
           onClick={buttonClickHome}
         >
           ホームへ
+        </button>
+        {/* 登録ボタン */}
+        <button
+          className={
+            isFormValid
+              ? `${styles.buttonInsertData} ${styles.button}`
+              : `${styles.buttonInsertDataNotHover} ${styles.button}`
+          }
+          onClick={handleInsertData}
+          disabled={!isFormValid}
+        >
+          登録
         </button>
       </div>
     </div>

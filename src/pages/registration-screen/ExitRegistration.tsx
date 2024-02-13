@@ -61,9 +61,6 @@ interface RegistrationResult {
 const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
   // アラート用
   const [alertOpen, setAlertOpen] = useState(false);
-  // const [Registration_result, setRegistrationResult] = useState<
-  //   [string, string[], string[]]
-  // >(["", [], []]);
 
   // 登録成功、失敗した文字列
   const [successfulNames, setSuccessfulNames] = useState<string[]>([]);
@@ -373,25 +370,29 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
             }
           />
         </label>
-        {/* 登録ボタン */}
+
+        {/* ホームボタン */}
         <button
           className={
             SelectExitUser != "その他"
+              ? `${styles.buttonClickHome} ${styles.button}`
+              : `${styles.buttonClickHomeSonota} ${styles.button}`
+          }
+          onClick={buttonClickHome}
+        >
+          ホームへ
+        </button>
+        {/* 登録ボタン */}
+        <button
+          className={
+            isFormValid
               ? `${styles.buttonInsertData} ${styles.button}`
-              : `${styles.buttonInsertDataSonota} ${styles.button}`
+              : `${styles.buttonInsertDataNotHover} ${styles.button}`
           }
           onClick={handleInsertData}
           disabled={!isFormValid}
         >
           登録
-        </button>
-
-        {/* ホームボタン */}
-        <button
-          className={`${styles.buttonClickHome} ${styles.button}`}
-          onClick={buttonClickHome}
-        >
-          ホームへ
         </button>
       </div>
     </div>

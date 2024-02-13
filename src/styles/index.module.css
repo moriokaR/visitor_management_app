@@ -46,7 +46,7 @@
 }
 
 .box {
-  background: #eee;
+  background: #e1f6f8;
   width: 820px;
   height: 1180px;
 }
@@ -56,9 +56,17 @@
   width: 30%;
   margin-top: 5px;
   margin-left: 69%;
-  font-size: 20px; /* 例として24pxに変更 */
+  font-size: 20px;
   display: block;
-  padding: 15px 20px; /* 例として上下に15px、左右に20pxのpaddingを追加 */
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0px 6px 3px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out; /* transformを追加 */
+}
+
+.buttonEnEx:hover {
+  box-shadow: 0px 10px 3px rgba(0, 0, 0, 0.5);
+  transform: scale(0.98); /* ホバー時に縮小させる */
 }
 
 /* ホームボタン透明度 */
