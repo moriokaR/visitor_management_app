@@ -10,6 +10,7 @@
 
 .customCalendar {
   /* カレンダーに対するスタイルを指定 */
-  transform: scale(1.5); /* カレンダーを1.5倍に拡大 */
-  margin-top: 100px;
+  transform: scale(1.3); /* カレンダーを1.5倍に拡大 */
+  margin-top: 18px;
+  margin-left: 60px;
 }
