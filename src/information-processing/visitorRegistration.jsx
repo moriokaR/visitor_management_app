@@ -8,7 +8,7 @@ const FAILURE_REGISTRATION = "登録失敗";
 // 来客者入力情報登録
 export const visitorRegistration = async (formData) => {
   try {
-    // attenderの日付をフォーマットする
+    // 入館の日付をフォーマットする
     const formattedEntryDateTime = formatDateTime(formData.entryDateTime);
 
     const response = await fetch("/api/visitor-registration", {

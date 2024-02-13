@@ -18,17 +18,19 @@ const InputDateTime = ({ selectedDate, onChange }) => {
       timeIntervals={15}
       dateFormat="yyyy/MM/dd, hh:mm aa"
       timeCaption="Time"
-      customInput={<CustomInput readOnly />} // カスタム入力フィールドを指定し、その中でreadOnlyを設定
+      customInput={<CustomInput />} // カスタム入力フィールドを指定し、その中でreadOnlyを設定
     />
   );
 };
 
 // カスタム入力フィールドのコンポーネント
-const CustomInput = React.forwardRef(({ value, onClick, readOnly }, ref) => (
+const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
   <input
-    defaultValue={value}
+    value={value}
+    // defaultValue={value}
     onClick={onClick}
-    readOnly={readOnly} // readOnlyを設定
+    // onChange={onChange}
+    readOnly // readOnlyを設定
     ref={ref}
   />
 ));

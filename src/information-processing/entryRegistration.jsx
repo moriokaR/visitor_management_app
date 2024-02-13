@@ -47,14 +47,14 @@ const setInEntryCardID = (formData) => {
     return formData.entryCardNumber + 20;
   } else if (formData.entryCardType === "その他") {
     return formData.entryCardNumber + 40;
-  } else if (formData.entryCardType === "未貸出") {
-    return formData.entryCardNumber;
+  } else if (formData.entryCardType === "-") {
+    return 99;
   }
 };
 
 // InRentStatusを設定する関数
 const setInRentStatus = (formData) => {
-  if (formData.entryCardType === "未貸出") {
+  if (formData.entryCardType === "-") {
     return "未貸出";
   } else {
     return "貸出中";

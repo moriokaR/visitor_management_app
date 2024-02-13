@@ -252,6 +252,7 @@ export default function VisitorRegistration() {
             {/* 事業所の選択ラジオボタン */}
             <input
               type="radio"
+              id="RITS他事業所"
               defaultValue="RITS他事業所"
               checked={companyOffice === "RITS他事業所"}
               onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -260,10 +261,12 @@ export default function VisitorRegistration() {
               }}
               disabled={companyType !== COMPANY_TYPE_OUR_COMPANY}
             />
-            他事業所
+            <label htmlFor="RITS他事業所">他事業所</label>
+
             <br />
             <input
               type="radio"
+              id="RITS鳥取事業所"
               defaultValue="RITS鳥取事業所"
               checked={companyOffice === "RITS鳥取事業所"}
               onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -272,7 +275,7 @@ export default function VisitorRegistration() {
               }}
               disabled={companyType !== COMPANY_TYPE_OUR_COMPANY}
             />
-            鳥取事業所
+            <label htmlFor="RITS鳥取事業所">鳥取事業所</label>
           </div>
         </label>
         {/* 担当者の入力フォーム */}
