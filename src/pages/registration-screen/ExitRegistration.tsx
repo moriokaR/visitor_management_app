@@ -109,10 +109,9 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
   }, [testData]);
 
   //   情報取れてるかの確認。
-  // useEffect(() => {
-  //   console.log(testData);
-  //   console.log(visitorNames);
-  // }, [testData]);
+  useEffect(() => {
+    console.log(testData);
+  }, [testData]);
 
   const router = useRouter();
 
@@ -220,19 +219,23 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
 
   // 登録　続ける
   const continueRegistration = async () => {
+    // 日時登録用
+    const setDate = new Date();
     // 登録後、フォームをクリア
     setTestData({
       VisitorNames: [],
       VisitorIDs: [],
       EntryCardIDs: [],
-      ExitDateTime: new Date(),
+      ExitDateTime: setDate,
       ExitUser: "牧島史子",
       Comment: "",
     });
     setInitialFormData((prevData) => ({
       ...prevData,
-      ExitDateTime: new Date(),
+      ExitDateTime: setDate,
     }));
+    // プルダウンリセット
+    setSelectExitUser("牧島史子");
     // 読み込み
     router.push("/registration-screen/ExitRegistration");
   };
