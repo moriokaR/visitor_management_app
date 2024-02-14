@@ -109,9 +109,9 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
   }, [testData]);
 
   //   情報取れてるかの確認。
-  useEffect(() => {
-    console.log(testData);
-  }, [testData]);
+  // useEffect(() => {
+  //   console.log(testData);
+  // }, [testData]);
 
   const router = useRouter();
 
