@@ -49,7 +49,7 @@ export const exitRegistration = async (
             VisitorID: visitorID,
             ExitUser: formData.ExitUser,
             ExitDateTime: formattedExitDateTime,
-            Comment: formData.Comment,
+            Comment: formData.Comment.trim(),
             EntryCardID: entryCardID,
             RentStatus: inRentStatus,
           },

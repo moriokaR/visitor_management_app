@@ -368,9 +368,16 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
             className={styles.inputField}
             type="text"
             value={testData.Comment}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              handleInputChange("Comment", e.target.value)
-            }
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              const inputValue = e.target.value;
+              if (inputValue.trim() === "") {
+                // 先頭と末尾のスペースのみの場合は空にする
+                handleInputChange("Comment", "");
+              } else {
+                // それ以外の場合は通常の変更を行う
+                handleInputChange("Comment", inputValue);
+              }
+            }}
           />
         </label>
 
