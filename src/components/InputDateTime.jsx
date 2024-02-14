@@ -22,7 +22,7 @@ const InputDateTime = ({ selectedDate, onChange }) => {
     return (
       <div className={styles.customHeader}>
         <button onClick={decreaseMonth}>{`<`}</button>
-        <span>{`${year} ${month}`}</span>
+        <span>{` ${year} ${month} `}</span>
         <button onClick={increaseMonth}>{`>`}</button>
       </div>
     );
