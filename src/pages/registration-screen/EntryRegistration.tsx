@@ -118,6 +118,7 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
       setRetentionCardNumber(0);
     }
   }, [testData.entryCardType]);
+
   // 情報取れてるかの確認。
   useEffect(() => {
     console.log(testData);

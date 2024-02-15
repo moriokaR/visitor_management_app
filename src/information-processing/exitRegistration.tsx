@@ -47,7 +47,7 @@ export const exitRegistration = async (
         body: JSON.stringify({
           data: {
             VisitorID: visitorID,
-            ExitUser: formData.ExitUser,
+            ExitUser: formData.ExitUser.trim(),
             ExitDateTime: formattedExitDateTime,
             Comment: formData.Comment.trim(),
             EntryCardID: entryCardID,

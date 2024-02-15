@@ -211,9 +211,16 @@ export default function VisitorRegistration() {
             className={styles.inputField}
             type="text"
             value={testData.visitorName}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              handleInputChange("visitorName", e.target.value)
-            }
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              const inputValue = e.target.value;
+              if (inputValue.trim() === "") {
+                // 先頭と末尾のスペースのみの場合は空にする
+                handleInputChange("visitorName", "");
+              } else {
+                // それ以外の場合は通常の変更を行う
+                handleInputChange("visitorName", e.target.value);
+              }
+            }}
           />
         </label>
         {/* 会社名または当社のラジオボタン */}
@@ -236,8 +243,16 @@ export default function VisitorRegistration() {
               type="text"
               value={companyText}
               onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                handleInputChangeCompanyText(e.target.value);
-                handleInputChange("company", e.target.value);
+                const inputValue = e.target.value;
+                if (inputValue.trim() === "") {
+                  // 先頭と末尾のスペースのみの場合は空にする
+                  handleInputChangeCompanyText("");
+                  handleInputChange("company", "");
+                } else {
+                  // それ以外の場合は通常の変更を行う
+                  handleInputChangeCompanyText(e.target.value);
+                  handleInputChange("company", e.target.value);
+                }
               }}
               disabled={companyType !== COMPANY_TYPE_COMPANY}
             />
@@ -299,9 +314,16 @@ export default function VisitorRegistration() {
             className={styles.inputField}
             type="text"
             value={testData.attender}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              handleInputChange("attender", e.target.value)
-            }
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              const inputValue = e.target.value;
+              if (inputValue.trim() === "") {
+                // 先頭と末尾のスペースのみの場合は空にする
+                handleInputChange("attender", "");
+              } else {
+                // それ以外の場合は通常の変更を行う
+                handleInputChange("attender", e.target.value);
+              }
+            }}
           />
         </label>
 
