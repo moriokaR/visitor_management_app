@@ -13,6 +13,7 @@ import RegistrationDialog from "../confirmation-dialog/registrationDialog";
 import SuccessfulRegistrationDialog from "../confirmation-dialog/successfulRegistrationDialog";
 import HomeDialog from "../confirmation-dialog/homeDialog";
 import FailureRegistrationDialog from "../alert-dialog/failureRegistrationDialog";
+import GetInformationFailureDialog from "../alert-dialog/getInformationFailureDialog";
 
 const columns = [
   // { field: "VisitorID", headerName: "visitorID", width: 70 },
@@ -38,6 +39,7 @@ interface VisitorData {
 }
 
 interface HomePageProps {
+  getInformationResults: string;
   initialData: VisitorData[];
 }
 
@@ -58,7 +60,18 @@ interface RegistrationResult {
   failureNames: string[];
 }
 
-const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
+const HomePage: React.FC<HomePageProps> = ({
+  getInformationResults,
+  initialData,
+}) => {
+  const [getInformationFailure, setGetInformationFailure] = useState(false);
+
+  // 情報取得に失敗した場合、アラート表示
+  useEffect(() => {
+    if (getInformationResults == "情報取得失敗") {
+      setGetInformationFailure(true);
+    }
+  }, [getInformationResults]);
   // アラート用
   const [alertOpen, setAlertOpen] = useState(false);
 
@@ -257,6 +270,12 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
         <title>退館登録</title>
       </Head>
       {/* アラートダイアログ */}
+      <GetInformationFailureDialog
+        isOpen={getInformationFailure}
+        onConfirm={() => {
+          setGetInformationFailure(false);
+        }}
+      />
       <FailureRegistrationDialog
         failureName={failureNames}
         successfulName={successfulNames}
@@ -424,11 +443,10 @@ export const getServerSideProps: GetServerSideProps<
   const apiResponseEntry = await getEntryInformation();
 
   if (apiResponseEntry == "情報取得失敗") {
-    // カスタムアラートは無理そう
-    alert("情報取得に失敗しました");
     const initialData: VisitorData[] = [];
     return {
       props: {
+        getInformationResults: "情報取得失敗",
         initialData,
       },
     };
@@ -438,6 +456,7 @@ export const getServerSideProps: GetServerSideProps<
 
   return {
     props: {
+      getInformationResults: "情報取得成功",
       initialData,
     },
   };

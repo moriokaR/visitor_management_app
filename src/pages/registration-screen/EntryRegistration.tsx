@@ -14,6 +14,7 @@ import RegistrationDialog from "../confirmation-dialog/registrationDialog";
 import SuccessfulRegistrationDialog from "../confirmation-dialog/successfulRegistrationDialog";
 import HomeDialog from "../confirmation-dialog/homeDialog";
 import FailureRegistrationDialog from "../alert-dialog/failureRegistrationDialog";
+import GetInformationFailureDialog from "../alert-dialog/getInformationFailureDialog";
 
 const RENT_ENTRY_CARD = "入館証貸出あり";
 const NOT_RENT_ENTRY_CARD = "入館証貸出なし";
@@ -42,6 +43,7 @@ interface CardData {
 }
 
 interface HomePageProps {
+  getInformationResults: string;
   initialData: VisitorData[];
   rentCardData: CardData[];
 }
@@ -53,7 +55,21 @@ interface TestData {
   entryCardNumber: number | string;
 }
 
-const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
+const HomePage: React.FC<HomePageProps> = ({
+  getInformationResults,
+  initialData,
+  rentCardData,
+}) => {
+  // 情報取得に失敗した場合、アラート表示
+  const [getInformationFailure, setGetInformationFailure] = useState(false);
+
+  // 情報取得に失敗した場合、アラート表示
+  useEffect(() => {
+    if (getInformationResults == "情報取得失敗") {
+      setGetInformationFailure(true);
+    }
+  }, [getInformationResults]);
+
   // アラート用
   const [alertOpen, setAlertOpen] = useState(false);
 
@@ -218,6 +234,12 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
         <title>入館登録</title>
       </Head>
       {/* アラートダイアログ */}
+      <GetInformationFailureDialog
+        isOpen={getInformationFailure}
+        onConfirm={() => {
+          setGetInformationFailure(false);
+        }}
+      />
       <FailureRegistrationDialog
         failureName={[]}
         successfulName={[]}
@@ -419,12 +441,11 @@ export const getServerSideProps: GetServerSideProps<
     apiResponseVisitorInput == "情報取得失敗" ||
     apiResponseRentCard == "情報取得失敗"
   ) {
-    // カスタムアラートは無理そう
-    alert("情報取得に失敗しました");
     const initialData: VisitorData[] = [];
     const rentCardData: CardData[] = [];
     return {
       props: {
+        getInformationResults: "情報取得失敗",
         initialData,
         rentCardData,
       },
@@ -436,6 +457,7 @@ export const getServerSideProps: GetServerSideProps<
 
   return {
     props: {
+      getInformationResults: "情報取得成功",
       initialData,
       rentCardData,
     },

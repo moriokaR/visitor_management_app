@@ -10,7 +10,7 @@ export default function FailureRegistrationDialog({
 }) {
   const content = (
     <>
-      登録に失敗しました.
+      登録に失敗しました。
       <br />
       {successfulName.length > 0 && (
         <>
