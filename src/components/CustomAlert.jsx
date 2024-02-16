@@ -1,4 +1,4 @@
-// src/components/CustomDialog.jsx
+// src/components/CustomAlert.jsx
 import * as React from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -6,13 +6,11 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import Button from "@mui/material/Button";
 
-export default function CustomDialog({
+export default function CustomAlert({
   isOpen,
   content,
-  confirmButtonLabel,
-  cancelButtonLabel,
-  onConfirm,
-  onCancel,
+  buttonLabel,
+  onButtonClick,
 }) {
   return (
     <React.Fragment>
@@ -34,11 +32,8 @@ export default function CustomDialog({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={onConfirm} sx={{ fontSize: "20px" }}>
-            {confirmButtonLabel}
-          </Button>
-          <Button onClick={onCancel} sx={{ fontSize: "20px" }}>
-            {cancelButtonLabel}
+          <Button onClick={onButtonClick} sx={{ fontSize: "20px" }}>
+            {buttonLabel}
           </Button>
         </DialogActions>
       </Dialog>

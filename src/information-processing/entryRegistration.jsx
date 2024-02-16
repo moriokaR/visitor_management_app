@@ -31,6 +31,7 @@ export const entryRegistration = async (formData) => {
       return SUCCESSFUL_REGISTRATION;
     } else {
       console.error("Failed to insert data:", await response.json());
+      return FAILURE_REGISTRATION;
     }
   } catch (error) {
     console.error("Error inserting data:", error);

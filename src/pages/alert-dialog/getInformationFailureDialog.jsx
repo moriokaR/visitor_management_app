@@ -1,9 +1,9 @@
-// src/pages/alert-dialog/OutOfRangeDialog.jsx
+// src/pages/alert-dialog/failureRegistrationDialog.jsx
 import React from "react";
 import CustomAlert from "../../components/CustomAlert";
 
-export default function OutOfRangeDialog({ isOpen, onConfirm }) {
-  const content = <>番号は# 01~20です</>;
+export default function GetInformationFailureDialog({ isOpen, onConfirm }) {
+  const content = <>情報取得に失敗しました。</>;
 
   return (
     <CustomAlert

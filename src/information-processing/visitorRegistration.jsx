@@ -18,10 +18,10 @@ export const visitorRegistration = async (formData) => {
       },
       body: JSON.stringify({
         data: {
-          visitorName: formData.visitorName,
-          company: formData.company,
+          visitorName: formData.visitorName.trim(),
+          company: formData.company.trim(),
           entryDateTime: formattedEntryDateTime,
-          attender: formData.attender,
+          attender: formData.attender.trim(),
         },
       }),
     });
@@ -33,6 +33,7 @@ export const visitorRegistration = async (formData) => {
       return SUCCESSFUL_REGISTRATION;
     } else {
       console.error("Failed to insert data:", await response.json());
+      return FAILURE_REGISTRATION;
     }
   } catch (error) {
     console.error("Error inserting data:", error);
