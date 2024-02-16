@@ -97,16 +97,16 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
   }, [testData]);
 
   // IDが変わったとき、初期化
-  useEffect(() => {
-    setTestData((prevData) => ({
-      ...prevData,
-      entryCardType: "Guest",
-      entryCardNumber: 0,
-    }));
-    setRentState(RENT_ENTRY_CARD);
-    setRetentionCardType("Guest");
-    setRetentionCardNumber(0);
-  }, [testData.visitorID]);
+  // useEffect(() => {
+  //   setTestData((prevData) => ({
+  //     ...prevData,
+  //     entryCardType: "Guest",
+  //     entryCardNumber: 0,
+  //   }));
+  //   setRentState(RENT_ENTRY_CARD);
+  //   setRetentionCardType("Guest");
+  //   setRetentionCardNumber(0);
+  // }, [testData.visitorID]);
 
   // Typeが変わったとき、番号初期化
   useEffect(() => {

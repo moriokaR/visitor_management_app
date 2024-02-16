@@ -31,7 +31,6 @@
   background-color: #fff;
 }
 
-/* styles/PopUp.module.css */
 .PopUp {
   position: fixed;
   top: 50%;
@@ -51,4 +50,12 @@
   margin-top: 10px;
   margin-bottom: 15px;
   margin: 5 auto;
+}
+
+.rentCardType {
+  display: block;
+  font-size: 24px;
+}
+.rentCardNumber {
+  font-size: 24px;
 }
