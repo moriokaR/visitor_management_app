@@ -32,7 +32,7 @@ export default async function handler(req, res) {
         // 成功時にステータスコード201とメッセージを返す
         res
           .status(201)
-          .json({ message: [] });
+          .json({ message: `${data.visitorName} さんの入館登録が完了しました！` });
       } catch (error) {
         // エラーが発生した場合、エラーメッセージをコンソールに表示
 
