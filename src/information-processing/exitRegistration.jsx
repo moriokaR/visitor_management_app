@@ -1,33 +1,12 @@
-// 退館情報登録
 // src/information-processing/exitRegistration.jsx
 
 // returnする関数
 const SUCCESSFUL_REGISTRATION = "登録成功";
 const FAILURE_REGISTRATION = "登録失敗";
 
-// フォームのデータ型を定義
-interface TestData {
-  VisitorNames: string[];
-  VisitorIDs: number[];
-  EntryCardIDs: number[];
-  ExitDateTime: Date;
-  ExitUser: string;
-  Comment: string;
-}
-
-interface RegistrationResult {
-  status: string;
-  successfulNames: string[];
-  failureNames: string[];
-}
-
 // 退館情報登録
-export const exitRegistration = async (
-  formData: TestData
-): Promise<RegistrationResult> => {
-  const responses: Response[] = [];
-  const successfulNames: string[] = [];
-  const failureNames: string[] = [];
+export const exitRegistration = async (formData) => {
+  const responses = [];
 
   try {
     const formattedExitDateTime = formatDateTime(formData.ExitDateTime);
@@ -47,9 +26,9 @@ export const exitRegistration = async (
         body: JSON.stringify({
           data: {
             VisitorID: visitorID,
-            ExitUser: formData.ExitUser.trim(),
+            ExitUser: formData.ExitUser,
             ExitDateTime: formattedExitDateTime,
-            Comment: formData.Comment.trim(),
+            Comment: formData.Comment,
             EntryCardID: entryCardID,
             RentStatus: inRentStatus,
           },
@@ -58,36 +37,31 @@ export const exitRegistration = async (
 
       responses.push(response);
 
-      // 登録失敗
+      // 登録成功
       if (response.status !== 201) {
         console.error(
           `Failed to insert data for VisitorID ${visitorID}:`,
           await response.json()
         );
-        // 失敗した名前
-        failureNames.push(formData.VisitorNames[i]);
-      } else {
-        // 成功した名前
-        successfulNames.push(formData.VisitorNames[i]);
       }
     }
 
     // すべてのデータが正常に登録された場合
     if (responses.every((response) => response.status === 201)) {
       console.log("All data inserted successfully");
-      return { status: SUCCESSFUL_REGISTRATION, successfulNames, failureNames };
+      return SUCCESSFUL_REGISTRATION;
     } else {
       console.error("Some data failed to insert");
-      return { status: FAILURE_REGISTRATION, successfulNames, failureNames };
     }
   } catch (error) {
     console.error("Error inserting data:", error);
-    return { status: FAILURE_REGISTRATION, successfulNames, failureNames };
+
+    return FAILURE_REGISTRATION;
   }
 };
 
 // InRentStatusを設定する関数
-const setInRentStatus = (formData: { entryCardID: number }): string => {
+const setInRentStatus = (formData) => {
   if (formData.entryCardID === 99) {
     return "未貸出";
   } else {
@@ -96,8 +70,8 @@ const setInRentStatus = (formData: { entryCardID: number }): string => {
 };
 
 // 日付をフォーマットする関数
-const formatDateTime = (dateTimeString: Date): string => {
-  const options: Intl.DateTimeFormatOptions = {
+const formatDateTime = (dateTimeString) => {
+  const options = {
     year: "numeric",
     month: "numeric",
     day: "numeric",

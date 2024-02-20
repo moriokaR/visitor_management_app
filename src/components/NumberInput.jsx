@@ -100,6 +100,7 @@ const NumberInput = ({
         onConfirm={() => {
           setOutOfRangeOpen(false);
         }}
+        number={number}
       />
       <AlreadyRentDialog
         isOpen={alreadyRentOpen}
@@ -124,23 +125,15 @@ const NumberInput = ({
         {isKeyboardVisible && (
           <div className={styles.PopUp}>
             <div>
-              貸出中番号&nbsp;
-              <label className={styles.rentCardType}>{testDataType}</label>
-              <label className={styles.rentCardNumber}>
-                {rentCardNumber.length > 0 ? (
-                  rentCardNumber.map((cardNumber, index) => (
-                    <span key={index} className={styles.rentCardNumber}>
-                      {index === rentCardNumber.length - 1
-                        ? cardNumber
-                        : `${cardNumber},`}
-                      {index < rentCardNumber.length - 1 &&
-                        (index + 1) % 10 === 0 && <br />}
-                    </span>
-                  ))
-                ) : (
-                  <span className={styles.rentCardNumber}>なし</span>
-                )}
-              </label>
+              貸出中&nbsp;
+              {testDataType}:
+              {rentCardNumber.map((cardNumber, index) => (
+                <span key={index} className={styles.rentCardNumber}>
+                  {index === rentCardNumber.length - 1
+                    ? cardNumber
+                    : `${cardNumber},`}
+                </span>
+              ))}
             </div>
             <input
               type="tel"
