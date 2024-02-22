@@ -1,7 +1,7 @@
 // 情報処理
 // src/information-processing/visitorRegistration.jsx
 
-// returnする関数
+// returnする変数
 const SUCCESSFUL_REGISTRATION = "登録成功";
 const FAILURE_REGISTRATION = "登録失敗";
 

@@ -6,7 +6,7 @@ import { getEntryInformation } from "../../information-processing/entry-informat
 import { exitRegistration } from "../../information-processing/exitRegistration";
 import { DataGrid, jaJP } from "@mui/x-data-grid";
 import { useRouter } from "next/router";
-import InputDateTime from "../../components/InputDateTime"; // InputDateTimeコンポーネントをインポート
+import InputDateTime from "../../components/InputDateTime";
 import Head from "next/head";
 import styles from "../../styles/ExitRegistration.module.css";
 import RegistrationDialog from "../confirmation-dialog/registrationDialog";

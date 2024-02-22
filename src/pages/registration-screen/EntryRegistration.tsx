@@ -112,18 +112,6 @@ const HomePage: React.FC<HomePageProps> = ({
     }
   }, [testData]);
 
-  // IDが変わったとき、初期化
-  // useEffect(() => {
-  //   setTestData((prevData) => ({
-  //     ...prevData,
-  //     entryCardType: "Guest",
-  //     entryCardNumber: 0,
-  //   }));
-  //   setRentState(RENT_ENTRY_CARD);
-  //   setRetentionCardType("Guest");
-  //   setRetentionCardNumber(0);
-  // }, [testData.visitorID]);
-
   // Typeが変わったとき、番号初期化
   useEffect(() => {
     if (testData.entryCardType != "-") {
@@ -136,9 +124,9 @@ const HomePage: React.FC<HomePageProps> = ({
   }, [testData.entryCardType]);
 
   // 情報取れてるかの確認。
-  useEffect(() => {
-    console.log(testData);
-  }, [testData]);
+  // useEffect(() => {
+  //   console.log(testData);
+  // }, [testData]);
 
   const initialFormData = {
     visitorID: 0,
@@ -179,13 +167,11 @@ const HomePage: React.FC<HomePageProps> = ({
     if (selectionModel.length > 0) {
       const selectedVisitorID = parseInt(selectionModel[0], 10);
 
-      // Find the selected visitor in the initialData array
       const selectedVisitor = initialData.find(
         (visitor) => visitor.visitorID === selectedVisitorID
       );
 
       if (selectedVisitor) {
-        // Set the visitorName to the selected visitor's name
         setVisitorName(selectedVisitor.visitorName);
       }
 
@@ -194,7 +180,7 @@ const HomePage: React.FC<HomePageProps> = ({
     } else {
       // 選択が解除された場合、0 を設定
       handleInputChange("visitorID", 0);
-      setVisitorName(""); // Clear visitorName when no visitor is selected
+      setVisitorName("");
     }
   };
 
@@ -398,7 +384,6 @@ const HomePage: React.FC<HomePageProps> = ({
               // testDataへ追加
               handleInputChange("entryCardType", "-");
               handleInputChange("entryCardNumber", "-");
-              console.log();
             }}
           />
           <label className={styles.rentLabel} htmlFor="NOT_RENT_ENTRY_CARD">
