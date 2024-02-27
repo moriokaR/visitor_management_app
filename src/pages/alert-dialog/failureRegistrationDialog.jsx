@@ -3,8 +3,8 @@ import React from "react";
 import CustomAlert from "../../components/CustomAlert";
 
 export default function FailureRegistrationDialog({
-  failureName,
-  successfulName,
+  failureNames,
+  successfulNames,
   isOpen,
   onConfirm,
 }) {
@@ -12,17 +12,17 @@ export default function FailureRegistrationDialog({
     <>
       登録に失敗しました。
       <br />
-      {successfulName.length > 0 && (
+      {successfulNames.length > 0 && (
         <>
           成功：
-          {successfulName.join("、")}
+          {successfulNames.join("、")}
           <br />
         </>
       )}
-      {failureName.length > 0 && (
+      {failureNames.length > 0 && (
         <>
           失敗：
-          {failureName.join("、")}
+          {failureNames.join("、")}
           <br />
         </>
       )}

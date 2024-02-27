@@ -150,8 +150,8 @@ export default function VisitorRegistration() {
       </Head>
       {/* アラートダイアログ */}
       <FailureRegistrationDialog
-        failureName={[]}
-        successfulName={[]}
+        failureNames={[]}
+        successfulNames={[]}
         isOpen={alertOpen}
         onConfirm={() => {
           setAlertOpen(false);

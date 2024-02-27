@@ -37,7 +37,7 @@ export const exitRegistration = async (
       const visitorID = formData.VisitorIDs[i];
       const entryCardID = formData.EntryCardIDs[i];
 
-      const inRentStatus = setInRentStatus({ entryCardID });
+      const inRentStatus = convertInRentStatus({ entryCardID });
 
       const response = await fetch("/api/exit-registration", {
         method: "POST",
@@ -87,7 +87,7 @@ export const exitRegistration = async (
 };
 
 // InRentStatusを設定する関数
-const setInRentStatus = (formData: { entryCardID: number }): string => {
+const convertInRentStatus = (formData: { entryCardID: number }): string => {
   if (formData.entryCardID === 99) {
     return "未貸出";
   } else {

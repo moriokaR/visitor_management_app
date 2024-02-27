@@ -18,12 +18,12 @@ import GetInformationFailureDialog from "../alert-dialog/getInformationFailureDi
 const columns = [
   // { field: "VisitorID", headerName: "visitorID", width: 70 },
   // { field: "entrycardid", headerName: "入館証ID", width: 70 },
-  { field: "entrydatetime", headerName: "日時", width: 140 },
-  { field: "visitorname", headerName: "氏名", width: 130 },
-  { field: "company", headerName: "会社", width: 180 },
-  { field: "attender", headerName: "当社対応者", width: 130 },
-  { field: "type", headerName: "入館証種別", width: 85 },
-  { field: "number", headerName: "入館証番号", width: 85 },
+  { field: "entrydatetime", headerName: "日時", minWidth: 145 },
+  { field: "visitorname", headerName: "氏名", minWidth: 140 },
+  { field: "company", headerName: "会社", minWidth: 120 },
+  { field: "attender", headerName: "当社対応者", minWidth: 140 },
+  { field: "type", headerName: "入館証種別", minWidth: 40 },
+  { field: "number", headerName: "入館証番号", minWidth: 40 },
 ];
 
 // VisitorData型の定義
@@ -277,8 +277,8 @@ const HomePage: React.FC<HomePageProps> = ({
         }}
       />
       <FailureRegistrationDialog
-        failureName={failureNames}
-        successfulName={successfulNames}
+        failureNames={failureNames}
+        successfulNames={successfulNames}
         isOpen={alertOpen}
         onConfirm={() => {
           setAlertOpen(false);
@@ -365,8 +365,8 @@ const HomePage: React.FC<HomePageProps> = ({
               value={InExitUser}
               onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 const inputValue = e.target.value;
+                // スペースのみを許容しない
                 if (inputValue.trim() === "") {
-                  // 先頭と末尾のスペースのみの場合は空にする
                   setInExitUser("");
                 } else {
                   // それ以外の場合は通常の変更を行う

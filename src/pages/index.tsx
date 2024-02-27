@@ -6,13 +6,13 @@ import styles from "../styles/index.module.css";
 
 const HomePage = () => {
   const router = useRouter();
-  const [openEnExBotton, setOpenEnExBotton] = useState(false);
+  const [openEnExButton, setOpenEnExButton] = useState(false);
 
   const handlePageClick = () => {
     router.push("/registration-screen/VisitorRegistration");
   };
   const buttonClickOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setOpenEnExBotton(!openEnExBotton);
+    setOpenEnExButton(!openEnExButton);
     e.stopPropagation();
   };
   const buttonClickEn = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -25,14 +25,14 @@ const HomePage = () => {
   };
 
   return (
-    <div className={styles.content}>
+    <div className={styles.content} onClick={handlePageClick}>
       {/* ヘッド要素 */}
       <Head>
         <title>ホーム画面</title>
       </Head>
-      <div className={styles.box} onClick={handlePageClick}>
+      <div className={styles.box}>
         {/* ボタン */}
-        {openEnExBotton ? (
+        {openEnExButton ? (
           <>
             <button
               className={`${styles.buttonEnEx} ${styles.button}`}
@@ -64,7 +64,7 @@ const HomePage = () => {
 
         <div>
           <center>
-            <h1 className={openEnExBotton ? styles.h1TopOpen : styles.h1Top}>
+            <h1 className={openEnExButton ? styles.h1TopOpen : styles.h1Top}>
               ようこそ！
             </h1>
             <h1 className={styles.h1}>リコーITソリューションズ</h1>

@@ -21,10 +21,10 @@ const NOT_RENT_ENTRY_CARD = "入館証貸出なし";
 
 const columns = [
   // { field: "visitorID", headerName: "visitorID", width: 70 },
-  { field: "entryDateTime", headerName: "日時", width: 200 },
-  { field: "visitorName", headerName: "氏名", width: 200 },
-  { field: "company", headerName: "会社", width: 200 },
-  { field: "attender", headerName: "当社対応者", width: 200 },
+  { field: "entryDateTime", headerName: "日時", minWidth: 145 },
+  { field: "visitorName", headerName: "氏名", minWidth: 140 },
+  { field: "company", headerName: "会社", minWidth: 120 },
+  { field: "attender", headerName: "当社対応者", minWidth: 140 },
 ];
 
 // VisitorData型の定義
@@ -61,12 +61,12 @@ const HomePage: React.FC<HomePageProps> = ({
   rentCardData,
 }) => {
   // 情報取得に失敗した場合、アラート表示
-  const [getInformationFailure, setGetInformationFailure] = useState(false);
+  const [isFailureGetInformation, setIsFailureGetInformation] = useState(false);
 
   // 情報取得に失敗した場合、アラート表示
   useEffect(() => {
     if (getInformationResults == "情報取得失敗") {
-      setGetInformationFailure(true);
+      setIsFailureGetInformation(true);
     }
   }, [getInformationResults]);
 
@@ -221,14 +221,14 @@ const HomePage: React.FC<HomePageProps> = ({
       </Head>
       {/* アラートダイアログ */}
       <GetInformationFailureDialog
-        isOpen={getInformationFailure}
+        isOpen={isFailureGetInformation}
         onConfirm={() => {
-          setGetInformationFailure(false);
+          setIsFailureGetInformation(false);
         }}
       />
       <FailureRegistrationDialog
-        failureName={[]}
-        successfulName={[]}
+        failureNames={[]}
+        successfulNames={[]}
         isOpen={alertOpen}
         onConfirm={() => {
           setAlertOpen(false);
@@ -287,6 +287,7 @@ const HomePage: React.FC<HomePageProps> = ({
           initialState={{
             pagination: { paginationModel: { pageSize: 5 } },
           }}
+          autoPageSize
           onRowSelectionModelChange={handleSelectionModelChange} // 選択状態変更時のコールバック
           getRowId={(row) => row.visitorID}
           localeText={jaJP.components.MuiDataGrid.defaultProps.localeText}
