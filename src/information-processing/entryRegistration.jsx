@@ -1,6 +1,6 @@
 // src/information-processing/entryRegistration.jsx
 
-// returnする関数
+// returnする変数
 const SUCCESSFUL_REGISTRATION = "登録成功";
 const FAILURE_REGISTRATION = "登録失敗";
 
@@ -31,6 +31,7 @@ export const entryRegistration = async (formData) => {
       return SUCCESSFUL_REGISTRATION;
     } else {
       console.error("Failed to insert data:", await response.json());
+      return FAILURE_REGISTRATION;
     }
   } catch (error) {
     console.error("Error inserting data:", error);

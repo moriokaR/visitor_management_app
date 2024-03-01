@@ -143,9 +143,15 @@ export default function VisitorRegistration() {
   };
 
   return (
-    <div>
+    <div className={styles.content}>
+      {/* ヘッド要素 */}
+      <Head>
+        <title>来客者登録</title>
+      </Head>
       {/* アラートダイアログ */}
       <FailureRegistrationDialog
+        failureNames={[]}
+        successfulNames={[]}
         isOpen={alertOpen}
         onConfirm={() => {
           setAlertOpen(false);
@@ -185,40 +191,44 @@ export default function VisitorRegistration() {
         }}
       />
 
-      {/* ヘッド要素 */}
-      <Head>
-        <title>来客者登録</title>
-      </Head>
-      {/* タイトル */}
-      <h1>来客者登録</h1>
-      <div>
+      {/* 来客者情報登録画面 */}
+      <div className={styles.box}>
+        {/* タイトル */}
+        <h1 className={styles.h1}>来客者登録</h1>
         {/* 入館日時の入力フォーム */}
         <h2 className={styles.h2}>入館日時</h2>
-        <label>
+        <label className={styles.labelDateTime}>
           <InputDateTime
             selectedDate={testData.entryDateTime}
             onChange={handleDateTimeChange}
           />
         </label>
-        <br />
         {/* 来客者名の入力フォーム */}
         <h2 className={styles.h2}>氏名</h2>
-        ※フルネームでご記入ください
-        <br />
-        <label>
+        <label className={styles.hintLabel}>※フルネームでご入力ください</label>
+        <label className={styles.inputLabel}>
           <input
+            className={styles.inputField}
             type="text"
             value={testData.visitorName}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              handleInputChange("visitorName", e.target.value)
-            }
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              const inputValue = e.target.value;
+              if (inputValue.trim() === "") {
+                // 先頭と末尾のスペースのみの場合は空にする
+                handleInputChange("visitorName", "");
+              } else {
+                // それ以外の場合は通常の変更を行う
+                handleInputChange("visitorName", e.target.value);
+              }
+            }}
           />
         </label>
-        <br />
         {/* 会社名または当社のラジオボタン */}
         <h2 className={styles.h2}>会社</h2>
-        <label>
+        <div className={styles.radioLabelCompany}>
           <input
+            id="COMPANY_TYPE_COMPANY"
+            className={styles.radioInput}
             type="radio"
             checked={companyType === COMPANY_TYPE_COMPANY}
             onChange={() => {
@@ -226,20 +236,32 @@ export default function VisitorRegistration() {
               handleInputChange("company", companyText);
             }}
           />
-          会社名：
+          <label className={styles.companyLabel} htmlFor="COMPANY_TYPE_COMPANY">
+            会社名：
+            <input
+              className={styles.companyInputField}
+              type="text"
+              value={companyText}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                const inputValue = e.target.value;
+                if (inputValue.trim() === "") {
+                  // 先頭と末尾のスペースのみの場合は空にする
+                  handleInputChangeCompanyText("");
+                  handleInputChange("company", "");
+                } else {
+                  // それ以外の場合は通常の変更を行う
+                  handleInputChangeCompanyText(e.target.value);
+                  handleInputChange("company", e.target.value);
+                }
+              }}
+              disabled={companyType !== COMPANY_TYPE_COMPANY}
+            />
+          </label>
+        </div>
+        <div className={styles.radioLabelCompany}>
           <input
-            type="text"
-            value={companyText}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              handleInputChangeCompanyText(e.target.value);
-              handleInputChange("company", e.target.value);
-            }}
-            disabled={companyType !== COMPANY_TYPE_COMPANY}
-          />
-        </label>
-        <br />
-        <label>
-          <input
+            id="COMPANY_TYPE_OUR_COMPANY"
+            className={styles.radioInput}
             type="radio"
             checked={companyType === COMPANY_TYPE_OUR_COMPANY}
             onChange={() => {
@@ -247,56 +269,84 @@ export default function VisitorRegistration() {
               handleInputChange("company", companyOffice);
             }}
           />
-          当社：
-          <div>
+          <label
+            className={styles.companyLabel}
+            htmlFor="COMPANY_TYPE_OUR_COMPANY"
+          >
+            当社：
             {/* 事業所の選択ラジオボタン */}
-            <input
-              type="radio"
-              id="RITS他事業所"
-              defaultValue="RITS他事業所"
-              checked={companyOffice === "RITS他事業所"}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                handleInputChangeCompanyOffice("RITS他事業所");
-                handleInputChange("company", e.target.value);
-              }}
-              disabled={companyType !== COMPANY_TYPE_OUR_COMPANY}
-            />
-            <label htmlFor="RITS他事業所">他事業所</label>
-
-            <br />
-            <input
-              type="radio"
-              id="RITS鳥取事業所"
-              defaultValue="RITS鳥取事業所"
-              checked={companyOffice === "RITS鳥取事業所"}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                handleInputChangeCompanyOffice("RITS鳥取事業所");
-                handleInputChange("company", e.target.value);
-              }}
-              disabled={companyType !== COMPANY_TYPE_OUR_COMPANY}
-            />
-            <label htmlFor="RITS鳥取事業所">鳥取事業所</label>
-          </div>
-        </label>
+            <div className={styles.radioLabelOffice1}>
+              <input
+                type="radio"
+                id="RITS他事業所"
+                className={styles.radioInput}
+                defaultValue="RITS他事業所"
+                checked={companyOffice === "RITS他事業所"}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  handleInputChangeCompanyOffice("RITS他事業所");
+                  handleInputChange("company", e.target.value);
+                }}
+                disabled={companyType !== COMPANY_TYPE_OUR_COMPANY}
+              />
+              <label htmlFor="RITS他事業所">他事業所</label>
+            </div>
+            <div className={styles.radioLabelOffice2}>
+              <input
+                type="radio"
+                id="RITS鳥取事業所"
+                className={styles.radioInput}
+                defaultValue="RITS鳥取事業所"
+                checked={companyOffice === "RITS鳥取事業所"}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  handleInputChangeCompanyOffice("RITS鳥取事業所");
+                  handleInputChange("company", e.target.value);
+                }}
+                disabled={companyType !== COMPANY_TYPE_OUR_COMPANY}
+              />
+              <label htmlFor="RITS鳥取事業所">鳥取事業所</label>
+            </div>
+          </label>
+        </div>
         {/* 担当者の入力フォーム */}
         <h2 className={styles.h2}>当社対応者</h2>
-        <label>
+        <label className={styles.inputLabel}>
           <input
+            className={styles.inputField}
             type="text"
             value={testData.attender}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              handleInputChange("attender", e.target.value)
-            }
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              const inputValue = e.target.value;
+              if (inputValue.trim() === "") {
+                // 先頭と末尾のスペースのみの場合は空にする
+                handleInputChange("attender", "");
+              } else {
+                // それ以外の場合は通常の変更を行う
+                handleInputChange("attender", e.target.value);
+              }
+            }}
           />
         </label>
-        <br />
+
+        {/* ホームボタン */}
+        <button
+          className={`${styles.buttonClickHome} ${styles.button}`}
+          onClick={buttonClickHome}
+        >
+          ホームへ
+        </button>
         {/* 登録ボタン */}
-        <button onClick={handleInsertData} disabled={!isFormValid}>
+        <button
+          className={
+            isFormValid
+              ? `${styles.buttonInsertData} ${styles.button}`
+              : `${styles.buttonInsertDataNotHover} ${styles.button}`
+          }
+          onClick={handleInsertData}
+          disabled={!isFormValid}
+        >
           登録
         </button>
       </div>
-      {/* ホームボタン */}
-      <button onClick={buttonClickHome}>ホームへ</button>
     </div>
   );
 }

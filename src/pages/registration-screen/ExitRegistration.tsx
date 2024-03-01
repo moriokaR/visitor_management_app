@@ -1,26 +1,29 @@
+// src/pages/registration-screen/ExitRegistration.tsx
+
 import React, { useState, useEffect, ChangeEvent } from "react";
 import { GetServerSideProps } from "next";
 import { getEntryInformation } from "../../information-processing/entry-information";
 import { exitRegistration } from "../../information-processing/exitRegistration";
 import { DataGrid, jaJP } from "@mui/x-data-grid";
 import { useRouter } from "next/router";
-import InputDateTime from "../../components/InputDateTime"; // InputDateTimeコンポーネントをインポート
+import InputDateTime from "../../components/InputDateTime";
 import Head from "next/head";
 import styles from "../../styles/ExitRegistration.module.css";
 import RegistrationDialog from "../confirmation-dialog/registrationDialog";
 import SuccessfulRegistrationDialog from "../confirmation-dialog/successfulRegistrationDialog";
 import HomeDialog from "../confirmation-dialog/homeDialog";
 import FailureRegistrationDialog from "../alert-dialog/failureRegistrationDialog";
+import GetInformationFailureDialog from "../alert-dialog/getInformationFailureDialog";
 
 const columns = [
   // { field: "VisitorID", headerName: "visitorID", width: 70 },
   // { field: "entrycardid", headerName: "入館証ID", width: 70 },
-  { field: "entrydatetime", headerName: "日時", width: 200 },
-  { field: "visitorname", headerName: "氏名", width: 200 },
-  { field: "company", headerName: "会社", width: 200 },
-  { field: "attender", headerName: "当社対応者", width: 200 },
-  { field: "type", headerName: "入館証種別", width: 200 },
-  { field: "number", headerName: "入館証番号", width: 200 },
+  { field: "entrydatetime", headerName: "日時", minWidth: 145 },
+  { field: "visitorname", headerName: "氏名", minWidth: 140 },
+  { field: "company", headerName: "会社", minWidth: 120 },
+  { field: "attender", headerName: "当社対応者", minWidth: 140 },
+  { field: "type", headerName: "入館証種別", minWidth: 40 },
+  { field: "number", headerName: "入館証番号", minWidth: 40 },
 ];
 
 // VisitorData型の定義
@@ -36,11 +39,13 @@ interface VisitorData {
 }
 
 interface HomePageProps {
+  getInformationResults: string;
   initialData: VisitorData[];
 }
 
 // フォームのデータ型を定義
 interface TestData {
+  VisitorNames: string[];
   VisitorIDs: number[];
   EntryCardIDs: number[];
   ExitDateTime: Date;
@@ -48,12 +53,31 @@ interface TestData {
   Comment: string;
 }
 
-const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
+// 登録結果
+interface RegistrationResult {
+  status: string;
+  successfulNames: string[];
+  failureNames: string[];
+}
+
+const HomePage: React.FC<HomePageProps> = ({
+  getInformationResults,
+  initialData,
+}) => {
+  const [getInformationFailure, setGetInformationFailure] = useState(false);
+
+  // 情報取得に失敗した場合、アラート表示
+  useEffect(() => {
+    if (getInformationResults == "情報取得失敗") {
+      setGetInformationFailure(true);
+    }
+  }, [getInformationResults]);
   // アラート用
   const [alertOpen, setAlertOpen] = useState(false);
 
-  // 選択されている氏名
-  const [visitorNames, setVisitorNames] = useState<string[]>([]);
+  // 登録成功、失敗した文字列
+  const [successfulNames, setSuccessfulNames] = useState<string[]>([]);
+  const [failureNames, setFailureNames] = useState<string[]>([]);
 
   // 選択されている退館登録者名
   const [SelectExitUser, setSelectExitUser] = useState<string>("牧島史子");
@@ -68,6 +92,7 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
 
   const [testData, setTestData] = useState<TestData>({
+    VisitorNames: [],
     VisitorIDs: [],
     EntryCardIDs: [],
     ExitDateTime: new Date(),
@@ -76,6 +101,7 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
   });
 
   const [initialFormData, setInitialFormData] = useState<TestData>({
+    VisitorNames: [],
     VisitorIDs: [],
     EntryCardIDs: [],
     ExitDateTime: new Date(),
@@ -98,7 +124,6 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
   //   情報取れてるかの確認。
   // useEffect(() => {
   //   console.log(testData);
-  //   console.log(visitorNames);
   // }, [testData]);
 
   const router = useRouter();
@@ -124,7 +149,7 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
   // TestDataの変更ハンドラ
   const handleInputChange = (
     fieldName: string,
-    value: string | number | number[]
+    value: string | number | number[] | string[]
   ) => {
     setTestData((prevData) => ({
       ...prevData,
@@ -156,14 +181,13 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
       handleInputChange("VisitorIDs", selectedVisitorIDs);
       // testDataのEntryCardIDsを変更
       handleInputChange("EntryCardIDs", selectedEntryCardIDs);
-
-      // Set the visitorName to the selected visitors' names
-      setVisitorNames(selectedVisitorNames);
+      // testDataのEntryCardIDsを変更
+      handleInputChange("VisitorNames", selectedVisitorNames);
     } else {
       // 選択が解除された場合、空の配列を設定
       handleInputChange("VisitorIDs", []);
       handleInputChange("EntryCardIDs", []);
-      setVisitorNames([]); // Clear visitorName when no visitor is selected
+      handleInputChange("VisitorNames", []);
     }
   };
 
@@ -182,32 +206,49 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
 
   // 登録しますか？　ok処理
   const okRegistration = async () => {
-    const Registration_result = await exitRegistration(testData);
-    if (Registration_result == "登録成功") {
+    const Registration_result: RegistrationResult = await exitRegistration(
+      testData
+    );
+    if (Registration_result.status == "登録成功") {
+      changeSuccessfulNames(Registration_result.successfulNames);
+      changeFailureNames(Registration_result.failureNames);
       setSuccessRegistrationOpen(true);
-    } else if (Registration_result == "登録失敗") {
+    } else if (Registration_result.status == "登録失敗") {
       // alert("登録に失敗しました");
+      changeSuccessfulNames(Registration_result.successfulNames);
+      changeFailureNames(Registration_result.failureNames);
       setAlertOpen(true);
     }
   };
 
+  // 成功の名前の変更
+  const changeSuccessfulNames = (names: string[]) => {
+    setSuccessfulNames(names);
+  };
+  // 失敗の名前の変更
+  const changeFailureNames = (names: string[]) => {
+    setFailureNames(names);
+  };
+
   // 登録　続ける
   const continueRegistration = async () => {
+    // 日時登録用
+    const setDate = new Date();
     // 登録後、フォームをクリア
     setTestData({
+      VisitorNames: [],
       VisitorIDs: [],
       EntryCardIDs: [],
-      ExitDateTime: new Date(),
+      ExitDateTime: setDate,
       ExitUser: "牧島史子",
       Comment: "",
     });
-    setInitialFormData({
-      VisitorIDs: [],
-      EntryCardIDs: [],
-      ExitDateTime: new Date(),
-      ExitUser: "牧島史子",
-      Comment: "",
-    });
+    setInitialFormData((prevData) => ({
+      ...prevData,
+      ExitDateTime: setDate,
+    }));
+    // プルダウンリセット
+    setSelectExitUser("牧島史子");
     // 読み込み
     router.push("/registration-screen/ExitRegistration");
   };
@@ -223,9 +264,21 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
   }, [SelectExitUser, InExitUser]);
 
   return (
-    <div>
+    <div className={styles.content}>
+      {/* ヘッド要素 */}
+      <Head>
+        <title>退館登録</title>
+      </Head>
       {/* アラートダイアログ */}
+      <GetInformationFailureDialog
+        isOpen={getInformationFailure}
+        onConfirm={() => {
+          setGetInformationFailure(false);
+        }}
+      />
       <FailureRegistrationDialog
+        failureNames={failureNames}
+        successfulNames={successfulNames}
         isOpen={alertOpen}
         onConfirm={() => {
           setAlertOpen(false);
@@ -245,7 +298,7 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
         }}
       />
       <SuccessfulRegistrationDialog
-        name={visitorNames}
+        name={successfulNames}
         isOpen={successRegistrationOpen}
         onConfirm={() => {
           setSuccessRegistrationOpen(false);
@@ -266,33 +319,33 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
           setHomeOpen(false);
         }}
       />
-      {/* ヘッド要素 */}
-      <Head>
-        <title>退館登録</title>
-      </Head>
-
-      <div>
+      {/* 退館登録画面 */}
+      <div className={styles.box}>
+        {/* タイトル */}
+        <h1 className={styles.h1}>退館登録</h1>
         {/* データの表示 */}
-        <h2>退館情報</h2>
         <DataGrid
           rows={initialData}
           columns={columns}
+          style={{
+            height: "370px",
+            width: "98%",
+            margin: "0 auto",
+            backgroundColor: "#ffffff",
+          }}
           initialState={{
             pagination: { paginationModel: { pageSize: 5 } },
           }}
-          pageSizeOptions={[5, 10, 25]}
           onRowSelectionModelChange={handleSelectionModelChange} // 選択状態変更時のコールバック
           getRowId={(row) => row.VisitorID}
           checkboxSelection
           localeText={jaJP.components.MuiDataGrid.defaultProps.localeText}
         />
-      </div>
-      <div>
         {/* 退館登録者の入力フォーム */}
-        {/* これと、登録完了した人の、分け目を作る */}
         <h2 className={styles.h2}>退館登録者</h2>
-        <label>
+        <label className={styles.labelSelect}>
           <select
+            className={styles.selectField}
             value={SelectExitUser}
             onChange={(e: ChangeEvent<HTMLSelectElement>) => {
               setSelectExitUser(e.target.value);
@@ -305,48 +358,79 @@ const HomePage: React.FC<HomePageProps> = ({ initialData }) => {
           </select>
         </label>
         {SelectExitUser == "その他" && (
-          <label>
+          <label className={styles.inputLabel}>
             <input
+              className={styles.inputField}
               type="text"
               value={InExitUser}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setInExitUser(e.target.value)
-              }
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                const inputValue = e.target.value;
+                // スペースのみを許容しない
+                if (inputValue.trim() === "") {
+                  setInExitUser("");
+                } else {
+                  // それ以外の場合は通常の変更を行う
+                  setInExitUser(e.target.value);
+                }
+              }}
             />
           </label>
         )}
 
         {/* 入館日時の入力フォーム */}
         <h2 className={styles.h2}>退館日時</h2>
-        <label>
+        <label className={styles.labelDateTime}>
           <InputDateTime
             selectedDate={testData.ExitDateTime}
             onChange={handleDateTimeChange}
           />
         </label>
-        <br />
+
         {/* コメントの入力フォーム */}
         <h2 className={styles.h2}>コメント</h2>
-        <br />
-        <label>
+
+        <label className={styles.inputLabel}>
           <input
+            className={styles.inputField}
             type="text"
             value={testData.Comment}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              handleInputChange("Comment", e.target.value)
-            }
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              const inputValue = e.target.value;
+              if (inputValue.trim() === "") {
+                // 先頭と末尾のスペースのみの場合は空にする
+                handleInputChange("Comment", "");
+              } else {
+                // それ以外の場合は通常の変更を行う
+                handleInputChange("Comment", inputValue);
+              }
+            }}
           />
         </label>
-        <br />
-      </div>
 
-      {/* 登録ボタン */}
-      <button onClick={handleInsertData} disabled={!isFormValid}>
-        登録
-      </button>
-      <br />
-      {/* ホームボタン */}
-      <button onClick={buttonClickHome}>ホームへ</button>
+        {/* ホームボタン */}
+        <button
+          className={
+            SelectExitUser != "その他"
+              ? `${styles.buttonClickHome} ${styles.button}`
+              : `${styles.buttonClickHomeSonota} ${styles.button}`
+          }
+          onClick={buttonClickHome}
+        >
+          ホームへ
+        </button>
+        {/* 登録ボタン */}
+        <button
+          className={
+            isFormValid
+              ? `${styles.buttonInsertData} ${styles.button}`
+              : `${styles.buttonInsertDataNotHover} ${styles.button}`
+          }
+          onClick={handleInsertData}
+          disabled={!isFormValid}
+        >
+          登録
+        </button>
+      </div>
     </div>
   );
 };
@@ -359,11 +443,10 @@ export const getServerSideProps: GetServerSideProps<
   const apiResponseEntry = await getEntryInformation();
 
   if (apiResponseEntry == "情報取得失敗") {
-    // カスタムアラートは無理そう
-    alert("情報取得に失敗しました");
     const initialData: VisitorData[] = [];
     return {
       props: {
+        getInformationResults: "情報取得失敗",
         initialData,
       },
     };
@@ -373,6 +456,7 @@ export const getServerSideProps: GetServerSideProps<
 
   return {
     props: {
+      getInformationResults: "情報取得成功",
       initialData,
     },
   };

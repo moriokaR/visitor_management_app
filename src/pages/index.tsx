@@ -1,12 +1,19 @@
 // pages/index.js
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import styles from "../styles/index.module.css";
 
 const HomePage = () => {
   const router = useRouter();
+  const [openEnExButton, setOpenEnExButton] = useState(false);
+
   const handlePageClick = () => {
     router.push("/registration-screen/VisitorRegistration");
+  };
+  const buttonClickOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setOpenEnExButton(!openEnExButton);
+    e.stopPropagation();
   };
   const buttonClickEn = (e: React.MouseEvent<HTMLButtonElement>) => {
     router.push("/registration-screen/EntryRegistration");
@@ -17,39 +24,57 @@ const HomePage = () => {
     e.stopPropagation();
   };
 
-  const containerStyles = {
-    cursor: "pointer",
-    height: "100vh",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    whiteSpace: "pre-line",
-  };
-  const buttonContainerStyles = {
-    position: "absolute" as "absolute",
-    top: "50px",
-    right: "50px",
-  };
-
   return (
-    <div style={containerStyles} onClick={handlePageClick}>
+    <div className={styles.content} onClick={handlePageClick}>
+      {/* ヘッド要素 */}
       <Head>
         <title>ホーム画面</title>
       </Head>
-      <div>
-        <center>
-          <h1>ようこそ！</h1>
-          <h1>リコーITソリューションズ</h1>
-          <h1>鳥取事業所へ！</h1>
-          <br></br>
-          <h3>いらっしゃいませ。</h3>
-          <h3>画面をタップして、</h3>
-          <h3>お客様情報を登録してください。</h3>
-        </center>
-      </div>
-      <div style={buttonContainerStyles}>
-        <button onClick={buttonClickEn}>入館登録画面</button>
-        <button onClick={buttonClickEx}>退館登録画面</button>
+      <div className={styles.box}>
+        {/* ボタン */}
+        {openEnExButton ? (
+          <>
+            <button
+              className={`${styles.buttonEnEx} ${styles.button}`}
+              onClick={buttonClickOpen}
+            >
+              管理者
+            </button>
+            <button
+              className={`${styles.buttonEnEx} ${styles.button}`}
+              onClick={buttonClickEn}
+            >
+              入館登録画面
+            </button>
+            <button
+              className={`${styles.buttonEnEx} ${styles.button}`}
+              onClick={buttonClickEx}
+            >
+              退館登録画面
+            </button>
+          </>
+        ) : (
+          <button
+            className={`${styles.buttonEnExV} ${styles.button}`}
+            onClick={buttonClickOpen}
+          >
+            管理者
+          </button>
+        )}
+
+        <div>
+          <center>
+            <h1 className={openEnExButton ? styles.h1TopOpen : styles.h1Top}>
+              ようこそ！
+            </h1>
+            <h1 className={styles.h1}>リコーITソリューションズ</h1>
+            <h1 className={styles.h1}>鳥取事業所へ！</h1>
+            <label className={styles.labelTop}>画面をタップして、</label>
+            <label className={styles.label}>
+              お客様情報を登録してください。
+            </label>
+          </center>
+        </div>
       </div>
     </div>
   );

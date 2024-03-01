@@ -1,3 +1,5 @@
+// src/pages/registration-screen/EntryRegistration.tsx
+
 import React, { useState, useEffect, ChangeEvent } from "react";
 import { GetServerSideProps } from "next";
 import { getVisitorInputInformation } from "../../information-processing/visitor-input-information";
@@ -12,16 +14,17 @@ import RegistrationDialog from "../confirmation-dialog/registrationDialog";
 import SuccessfulRegistrationDialog from "../confirmation-dialog/successfulRegistrationDialog";
 import HomeDialog from "../confirmation-dialog/homeDialog";
 import FailureRegistrationDialog from "../alert-dialog/failureRegistrationDialog";
+import GetInformationFailureDialog from "../alert-dialog/getInformationFailureDialog";
 
 const RENT_ENTRY_CARD = "入館証貸出あり";
 const NOT_RENT_ENTRY_CARD = "入館証貸出なし";
 
 const columns = [
   // { field: "visitorID", headerName: "visitorID", width: 70 },
-  { field: "entryDateTime", headerName: "日時", width: 200 },
-  { field: "visitorName", headerName: "氏名", width: 200 },
-  { field: "company", headerName: "会社", width: 200 },
-  { field: "attender", headerName: "当社対応者", width: 200 },
+  { field: "entryDateTime", headerName: "日時", minWidth: 145 },
+  { field: "visitorName", headerName: "氏名", minWidth: 140 },
+  { field: "company", headerName: "会社", minWidth: 120 },
+  { field: "attender", headerName: "当社対応者", minWidth: 140 },
 ];
 
 // VisitorData型の定義
@@ -40,6 +43,7 @@ interface CardData {
 }
 
 interface HomePageProps {
+  getInformationResults: string;
   initialData: VisitorData[];
   rentCardData: CardData[];
 }
@@ -51,7 +55,21 @@ interface TestData {
   entryCardNumber: number | string;
 }
 
-const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
+const HomePage: React.FC<HomePageProps> = ({
+  getInformationResults,
+  initialData,
+  rentCardData,
+}) => {
+  // 情報取得に失敗した場合、アラート表示
+  const [isFailureGetInformation, setIsFailureGetInformation] = useState(false);
+
+  // 情報取得に失敗した場合、アラート表示
+  useEffect(() => {
+    if (getInformationResults == "情報取得失敗") {
+      setIsFailureGetInformation(true);
+    }
+  }, [getInformationResults]);
+
   // アラート用
   const [alertOpen, setAlertOpen] = useState(false);
 
@@ -94,17 +112,16 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
     }
   }, [testData]);
 
-  // IDが変わったとき、初期化
+  // Typeが変わったとき、番号初期化
   useEffect(() => {
-    setTestData((prevData) => ({
-      ...prevData,
-      entryCardType: "Guest",
-      entryCardNumber: 0,
-    }));
-    setRentState(RENT_ENTRY_CARD);
-    setRetentionCardType("Guest");
-    setRetentionCardNumber(0);
-  }, [testData.visitorID]);
+    if (testData.entryCardType != "-") {
+      setTestData((prevData) => ({
+        ...prevData,
+        entryCardNumber: 0,
+      }));
+      setRetentionCardNumber(0);
+    }
+  }, [testData.entryCardType]);
 
   // 情報取れてるかの確認。
   // useEffect(() => {
@@ -150,13 +167,11 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
     if (selectionModel.length > 0) {
       const selectedVisitorID = parseInt(selectionModel[0], 10);
 
-      // Find the selected visitor in the initialData array
       const selectedVisitor = initialData.find(
         (visitor) => visitor.visitorID === selectedVisitorID
       );
 
       if (selectedVisitor) {
-        // Set the visitorName to the selected visitor's name
         setVisitorName(selectedVisitor.visitorName);
       }
 
@@ -165,7 +180,7 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
     } else {
       // 選択が解除された場合、0 を設定
       handleInputChange("visitorID", 0);
-      setVisitorName(""); // Clear visitorName when no visitor is selected
+      setVisitorName("");
     }
   };
 
@@ -199,9 +214,21 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
     router.push("/registration-screen/EntryRegistration");
   };
   return (
-    <div>
+    <div className={styles.content}>
+      {/* ヘッド要素 */}
+      <Head>
+        <title>入館登録</title>
+      </Head>
       {/* アラートダイアログ */}
+      <GetInformationFailureDialog
+        isOpen={isFailureGetInformation}
+        onConfirm={() => {
+          setIsFailureGetInformation(false);
+        }}
+      />
       <FailureRegistrationDialog
+        failureNames={[]}
+        successfulNames={[]}
         isOpen={alertOpen}
         onConfirm={() => {
           setAlertOpen(false);
@@ -240,52 +267,54 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
           setHomeOpen(false);
         }}
       />
-      {/* ヘッド要素 */}
-      <Head>
-        <title>入館登録</title>
-      </Head>
-
+      {/* キーボードが表示されている時、背景を黒塗り */}
       {keyboardVisible && <div className={styles.overlay}></div>}
 
-      <div>
+      {/* 入館情報登録画面 */}
+      <div className={styles.box}>
+        {/* タイトル */}
+        <h1 className={styles.h1}>入館登録</h1>
         {/* データの表示 */}
-        <h2>入館情報</h2>
-
         <DataGrid
           rows={initialData}
           columns={columns}
+          style={{
+            height: "370px",
+            width: "98%",
+            margin: "0 auto",
+            backgroundColor: "#ffffff",
+          }}
           initialState={{
             pagination: { paginationModel: { pageSize: 5 } },
           }}
-          pageSizeOptions={[5, 10, 25]}
+          autoPageSize
           onRowSelectionModelChange={handleSelectionModelChange} // 選択状態変更時のコールバック
           getRowId={(row) => row.visitorID}
           localeText={jaJP.components.MuiDataGrid.defaultProps.localeText}
         />
-      </div>
-
-      {/* 会社名または当社のラジオボタン */}
-      <label>
-        <input
-          type="radio"
-          checked={rentState === RENT_ENTRY_CARD}
-          onChange={() => {
-            setRentState(RENT_ENTRY_CARD);
-            // 保持データをtestDataへ追加
-            handleInputChange("entryCardNumber", retentionCardNumber);
-            handleInputChange("entryCardType", retentionCardType);
-          }}
-        />
-        入館証貸出あり
-        <div>
-          <div>
-            <h2 className={styles.h2}>種別</h2>
+        {/* 会社名または当社のラジオボタン */}
+        <div className={styles.radioLabelRent}>
+          <input
+            id="RENT_ENTRY_CARD"
+            className={styles.radioInput}
+            type="radio"
+            checked={rentState === RENT_ENTRY_CARD}
+            onChange={() => {
+              setRentState(RENT_ENTRY_CARD);
+              // 保持データをtestDataへ追加
+              handleInputChange("entryCardNumber", retentionCardNumber);
+              handleInputChange("entryCardType", retentionCardType);
+            }}
+          />
+          <label className={styles.rentLabel} htmlFor="RENT_ENTRY_CARD">
+            入館証貸出あり
             {/* カードタイプの選択ラジオボタン */}
-            {/* <div className={styles.radioButton}> */}
-            <div>
+            <h2 className={styles.h2}>種別</h2>
+            <div className={styles.radioLabelType}>
               <input
                 type="radio"
                 id="Guest"
+                className={styles.radioInput}
                 defaultValue="Guest"
                 checked={retentionCardType === "Guest"}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -296,11 +325,12 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
                 disabled={rentState !== RENT_ENTRY_CARD}
               />
               <label htmlFor="Guest">Guest</label>
-
-              <br />
+            </div>
+            <div className={styles.radioLabelType}>
               <input
                 type="radio"
                 id="リクルートカード"
+                className={styles.radioInput}
                 defaultValue="リクルートカード"
                 checked={retentionCardType === "リクルートカード"}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -311,11 +341,12 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
                 disabled={rentState !== RENT_ENTRY_CARD}
               />
               <label htmlFor="リクルートカード">リクルートカード</label>
-
-              <br />
+            </div>
+            <div className={styles.radioLabelType}>
               <input
                 type="radio"
                 id="その他"
+                className={styles.radioInput}
                 defaultValue="その他"
                 checked={retentionCardType === "その他"}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -327,9 +358,7 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
               />
               <label htmlFor="その他">その他</label>
             </div>
-          </div>
-          <div>
-            {/* 登録時に判定外かどうかが必要！！！！！ */}
+            {/* 番号入力 */}
             <h2 className={styles.h2}>番号</h2>
             <NumberInput
               onNumberChange={handleNumberChange}
@@ -343,31 +372,45 @@ const HomePage: React.FC<HomePageProps> = ({ initialData, rentCardData }) => {
               getRentCardData={rentCardData}
               testDataType={testData.entryCardType}
             />
-          </div>
+          </label>
         </div>
-      </label>
-      <br />
-      <label>
-        <input
-          type="radio"
-          checked={rentState === NOT_RENT_ENTRY_CARD}
-          onChange={() => {
-            setRentState(NOT_RENT_ENTRY_CARD);
-            // testDataへ追加
-            handleInputChange("entryCardType", "-");
-            handleInputChange("entryCardNumber", "-");
-          }}
-        />
-        入館証貸出なし
-      </label>
-      <br />
-      {/* 登録ボタン */}
-      <button onClick={handleInsertData} disabled={!isFormValid}>
-        登録
-      </button>
-      <br />
-      {/* ホームボタン */}
-      <button onClick={buttonClickHome}>ホームへ</button>
+        <div className={styles.radioLabelRent}>
+          <input
+            type="radio"
+            id="NOT_RENT_ENTRY_CARD"
+            className={styles.radioInput}
+            checked={rentState === NOT_RENT_ENTRY_CARD}
+            onChange={() => {
+              setRentState(NOT_RENT_ENTRY_CARD);
+              // testDataへ追加
+              handleInputChange("entryCardType", "-");
+              handleInputChange("entryCardNumber", "-");
+            }}
+          />
+          <label className={styles.rentLabel} htmlFor="NOT_RENT_ENTRY_CARD">
+            入館証貸出なし
+          </label>
+        </div>
+        {/* ホームボタン */}
+        <button
+          className={`${styles.buttonClickHome} ${styles.button}`}
+          onClick={buttonClickHome}
+        >
+          ホームへ
+        </button>
+        {/* 登録ボタン */}
+        <button
+          className={
+            isFormValid
+              ? `${styles.buttonInsertData} ${styles.button}`
+              : `${styles.buttonInsertDataNotHover} ${styles.button}`
+          }
+          onClick={handleInsertData}
+          disabled={!isFormValid}
+        >
+          登録
+        </button>
+      </div>
     </div>
   );
 };
@@ -384,12 +427,11 @@ export const getServerSideProps: GetServerSideProps<
     apiResponseVisitorInput == "情報取得失敗" ||
     apiResponseRentCard == "情報取得失敗"
   ) {
-    // カスタムアラートは無理そう
-    alert("情報取得に失敗しました");
     const initialData: VisitorData[] = [];
     const rentCardData: CardData[] = [];
     return {
       props: {
+        getInformationResults: "情報取得失敗",
         initialData,
         rentCardData,
       },
@@ -401,6 +443,7 @@ export const getServerSideProps: GetServerSideProps<
 
   return {
     props: {
+      getInformationResults: "情報取得成功",
       initialData,
       rentCardData,
     },

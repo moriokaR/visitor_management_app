@@ -1,4 +1,135 @@
-.h2 {
-  margin: 0; /* 上下の余白をゼロに設定 */
+/* src/styles/VisitorRegistration.module.css */
+
+.content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
+.box {
+  background: #e1f6f8;
+  width: 820px;
+  height: 1180px;
+}
+
+.h1 {
+  /* margin: 0; */
+  text-align: center;
+  font-size: 60px;
+  margin-bottom: 30px;
+}
+
+.h2 {
+  margin: 10px 0 5px;
+  text-align: center;
+  font-size: 45px;
+}
+
+/* 入館日時 */
+
+.labelDateTime {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 20px;
+  text-align: center;
+}
+
+/* 氏名 */
+.hintLabel {
+  font-size: 30px;
+  margin: 10px 0 0 20%;
+}
+
+.inputLabel {
+  font-size: 30px;
+  display: block;
+  text-align: center;
+}
+
+.inputField {
+  width: 60%;
+  padding: 10px;
+  box-sizing: border-box;
+  font-size: 40px;
+}
+
+/* 会社 */
+
+.radioLabelCompany {
+  display: block;
+  margin: 20px 0 30px 20%;
+}
+
+.radioInput {
+  transform: scale(2);
+  margin-right: 15px;
+  position: relative;
+  top: -3.5px;
+}
+
+.companyLabel {
+  font-size: 30px;
+}
+
+.companyInputField {
+  width: 60%;
+  padding: 5px;
+  box-sizing: border-box;
+  font-size: 30px;
+}
+
+.radioLabelOffice1 {
+  margin: 15px 0 10px 25%;
+}
+.radioLabelOffice2 {
+  display: block;
+  margin: 15px 0 0 25%;
+}
+
+/* 登録ボタン */
+.buttonInsertData {
+  width: 35%;
+  height: 100px;
+  margin: 20px 0 0 10%;
+  font-size: 30px;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0px 6px 3px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+  background-color: #4e9ef4;
+}
+
+.buttonInsertData:hover {
+  box-shadow: 0px 10px 3px rgba(0, 0, 0, 0.5);
+  transform: scale(0.98);
+}
+
+/* 登録ボタンNotHover */
+.buttonInsertDataNotHover {
+  width: 35%;
+  height: 100px;
+  margin: 20px 0 0 10%;
+  font-size: 30px;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0px 6px 3px rgba(0, 0, 0, 0.3);
+  background-color: #3d6188;
+}
+
+/* ホームボタン */
+.buttonClickHome {
+  width: 20%;
+  margin: 50px 0 0 2.5%;
+  font-size: 24px;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0px 6px 3px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.buttonClickHome:hover {
+  box-shadow: 0px 10px 3px rgba(0, 0, 0, 0.5);
+  transform: scale(0.98);
+}

@@ -1,0 +1,70 @@
+.h1Top {
+  text-align: center;
+  font-size: 50px;
+  margin: 250px 0 5px;
+}
+.h1TopOpen {
+  text-align: center;
+  font-size: 50px;
+  margin: 115px 0 5px;
+}
+.h1 {
+  text-align: center;
+  font-size: 50px;
+  margin: 5px 0;
+}
+
+.labelTop {
+  text-align: center;
+  display: block;
+  font-size: 40px;
+  margin: 200px 0 5px;
+}
+.label {
+  text-align: center;
+  display: block;
+  font-size: 40px;
+  margin: 5px 0;
+}
+
+.content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.box {
+  background: #e1f6f8;
+  width: 820px;
+  height: 1180px;
+}
+
+/* 入退館登録ボタン */
+.buttonEnEx {
+  width: 30%;
+  margin: 5px 0 0 69%;
+  font-size: 20px;
+  display: block;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0px 6px 3px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.buttonEnEx:hover {
+  box-shadow: 0px 10px 3px rgba(0, 0, 0, 0.5);
+  transform: scale(0.98);
+}
+
+/* 入退館登録ボタン透明度 */
+.buttonEnExV {
+  opacity: 0;
+  pointer-events: auto;
+  width: 30%;
+  margin: 5px 0 0 69%;
+  font-size: 20px;
+  display: block;
+  padding: 15px 20px;
+}
